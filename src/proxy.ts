@@ -1,11 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/lib/supabase/config";
+import { shouldRefreshSession } from "@/lib/supabase/session";
 
 /**
- * Refreshes the Supabase auth session on every request.
+ * Refreshes the Supabase auth session when the access token is about to expire.
  * Without this, the access token cannot be rotated from Server Components
  * and long cashier shifts would be logged out after the token expires.
+ *
+ * The Auth round-trip only happens when the token is close to expiry — a fresh
+ * token is verified locally later in `getSessionContext`, which keeps the
+ * common navigation path free of network calls to the Auth server.
  */
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -28,12 +33,7 @@ export async function proxy(request: NextRequest) {
   });
 
   // IMPORTANT: no code between createServerClient and getUser().
-  // Skip the round-trip when there is no session cookie at all (login page).
-  const hasSessionCookie = request.cookies
-    .getAll()
-    .some(({ name }) => name.startsWith("sb-"));
-
-  if (hasSessionCookie) {
+  if (shouldRefreshSession(request.cookies.getAll())) {
     await supabase.auth.getUser();
   }
 

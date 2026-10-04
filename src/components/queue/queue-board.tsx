@@ -90,9 +90,12 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
     router.refresh();
   }, [changeVersion, router]);
 
-  // Fallback while the board is left open on a counter screen.
+  // Fallback while the board is left open on a counter screen (paused when
+  // the tab is in the background — no pointless network requests).
   useEffect(() => {
-    const timer = setInterval(() => router.refresh(), 15_000);
+    const timer = setInterval(() => {
+      if (!document.hidden) router.refresh();
+    }, 15_000);
     return () => clearInterval(timer);
   }, [router]);
 

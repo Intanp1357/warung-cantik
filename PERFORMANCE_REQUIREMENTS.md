@@ -299,6 +299,56 @@ Do not trust totals calculated only on the client.
 
 ---
 
+## Queue Performance
+
+The product queue shows which checked-out products are still waiting, and it
+drives the live count badge in the sidebar/bottom nav. It is often left open on
+a counter screen, so it must stay fresh without user interaction.
+
+Required behavior:
+
+```text
+Checkout / Done / Cancel / Undo
+        ↓
+Postgres (atomic RPC, stock fixed in the same call)
+        ↓
+Supabase Realtime  ──→  badge + queue board update (< ~1 s)
+        ↓ (fallback)
+Low-frequency poll (~20 s) + refresh on tab focus
+```
+
+Rules:
+
+- The badge must **never** require a manual page refresh.
+- Badge state lives in a client provider (React context + realtime/poll),
+  never in a blocking server query on the root layout. A page render must not
+  wait for the queue count.
+- Realtime (`postgres_changes` on `transaction_items`) is the primary channel.
+  Polling is only a fallback for a broken connection — keep it slow (≥ 15 s)
+  and skip it while the tab is hidden.
+- Fire an immediate local refresh after each local action (checkout, Done,
+  Cancel, Undo) so the UI feels instant even if the event is still in flight.
+- One tap on Done/Cancel = exactly one RPC (`set_queue_status`), which also
+  returns/decrements stock atomically. Never N round-trips for one tap.
+- Queue queries are bounded (≤ ~150 rows per status tab), use the
+  `(queue_status, created_at)` index, and select only the columns the board
+  renders. No `SELECT *`, no full-table scans, no `COUNT(*)` on every load.
+- Status changes update local component state immediately (button disabled →
+  spinner → row moves); do not refetch the whole queue to reflect one change.
+- Cancel an interval when the tab is hidden (`document.hidden`) — a queue
+  screen left open overnight must not generate a request every few seconds.
+- Never send the queue through the public route cache in a way that could leak
+  one cashier's view to another user.
+
+Verification:
+
+- Two devices open: checkout on device A, badge changes on device B without
+  refreshing.
+- Badge settles with the network throttled to Slow 3G / offline (poll fallback).
+- A queue tab in the background generates no requests until it is focused.
+
+---
+
 ## Avoid Waterfalls
 
 Avoid:

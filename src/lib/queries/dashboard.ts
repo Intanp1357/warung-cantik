@@ -51,18 +51,26 @@ function buildSeries(range: DateRangeKey, from: Date): SalesPoint[] {
   }));
 }
 
-function pointIndexFor(range: DateRangeKey, from: Date, iso: string): number {
-  const date = new Date(iso);
-
-  if (range === "today") return date.getHours();
-  if (range === "week") {
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-    return Math.round((dayStart.getTime() - from.getTime()) / 86_400_000);
-  }
-  return date.getDate() - 1;
+interface SummaryRow {
+  revenue: number | string;
+  transaction_count: number | string;
+  items_sold: number | string;
+  average: number | string;
+  series: { index: number; value: number | string }[];
 }
 
+const BUCKET_BY_RANGE: Record<DateRangeKey, "hour" | "weekday" | "daynum"> = {
+  today: "hour",
+  week: "weekday",
+  month: "daynum",
+};
+
+/**
+ * One Postgres round-trip for all four stat cards and the chart series —
+ * aggregation happens in the database (`dashboard_summary` RPC) instead of
+ * downloading every transaction of the range.
+ * Dashboard data is never cached: it must reflect the latest sale.
+ */
 export async function getDashboardData(
   range: DateRangeKey,
 ): Promise<QueryResult<DashboardData>> {
@@ -70,46 +78,28 @@ export async function getDashboardData(
     const { from, to } = rangeToDates(range);
     const supabase = await createClient();
 
-    const [transactionsResult, itemsResult] = await Promise.all([
-      supabase
-        .from("transactions")
-        .select("created_at, total_amount")
-        .gte("created_at", from.toISOString())
-        .lte("created_at", to.toISOString())
-        .order("created_at", { ascending: true })
-        .limit(5000),
-      supabase
-        .from("transaction_items")
-        .select("quantity, transactions!inner(created_at)")
-        .gte("transactions.created_at", from.toISOString())
-        .lte("transactions.created_at", to.toISOString())
-        .limit(10_000),
-    ]);
+    const { data, error } = await supabase.rpc("dashboard_summary", {
+      p_from: from.toISOString(),
+      p_to: to.toISOString(),
+      p_bucket: BUCKET_BY_RANGE[range],
+      p_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    });
 
-    if (transactionsResult.error) return fail(transactionsResult.error);
-    if (itemsResult.error) return fail(itemsResult.error);
+    if (error) return fail(error);
 
+    const row = (data ?? {}) as SummaryRow;
     const series = buildSeries(range, from);
-    let sales = 0;
 
-    for (const row of transactionsResult.data ?? []) {
-      const index = pointIndexFor(range, from, row.created_at);
-      const point = series[index];
-      if (point) point.value += row.total_amount;
-      sales += row.total_amount;
+    for (const point of row.series ?? []) {
+      const target = series[point.index];
+      if (target) target.value = Number(point.value);
     }
 
-    const transactionCount = transactionsResult.data?.length ?? 0;
-    const itemsSold = (itemsResult.data ?? []).reduce(
-      (total, row) => total + (row.quantity ?? 0),
-      0,
-    );
-
     return ok({
-      sales,
-      transactionCount,
-      itemsSold,
-      average: transactionCount > 0 ? Math.round(sales / transactionCount) : 0,
+      sales: Number(row.revenue ?? 0),
+      transactionCount: Number(row.transaction_count ?? 0),
+      itemsSold: Number(row.items_sold ?? 0),
+      average: Number(row.average ?? 0),
       series,
     });
   } catch (error) {

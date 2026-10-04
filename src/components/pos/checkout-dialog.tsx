@@ -49,6 +49,9 @@ export function CheckoutDialog({
 }: CheckoutDialogProps) {
   const items = useCart((state) => state.items);
   const clear = useCart((state) => state.clear);
+  // Idempotency key: stays the same while the cart is unchanged, so retrying a
+  // failed payment can never record the sale twice.
+  const checkoutReference = useCart((state) => state.checkoutReference);
 
   const [method, setMethod] = useState<PaymentMethod>("cash");
   const [amount, setAmount] = useState("");
@@ -83,6 +86,7 @@ export function CheckoutDialog({
         })),
         payment_method: method,
         payment_amount: paymentAmount,
+        client_reference: checkoutReference,
       });
 
       if (!response.ok) {
@@ -93,6 +97,10 @@ export function CheckoutDialog({
       setResult(response.data);
       clear();
       notifyQueueChanged();
+    } catch {
+      // Network hiccup: the retry below reuses the same client reference, so
+      // the server will never record the sale twice.
+      toast.error("Connection problem. Check the network and try again.");
     } finally {
       setPending(false);
     }

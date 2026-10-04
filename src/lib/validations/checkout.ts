@@ -12,6 +12,11 @@ export const checkoutSchema = z.object({
     .number({ error: "Payment amount is required" })
     .min(0, "Payment amount must be 0 or more")
     .max(100_000_000, "Payment amount is too large"),
+  /**
+   * Idempotency key: the same cart retried after a network failure must not
+   * create a second transaction. Generated on the client, stored server-side.
+   */
+  client_reference: z.string().uuid().optional(),
 });
 
 export type CheckoutValues = z.infer<typeof checkoutSchema>;

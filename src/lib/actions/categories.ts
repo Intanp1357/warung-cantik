@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
+import { CATALOG_TAG } from "@/lib/cache-tags";
 import { getSessionContext } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { categorySchema } from "@/lib/validations/product";
@@ -50,6 +51,7 @@ export async function createCategoryAction(
       return { ok: false, error: getErrorMessage(error, "Failed to save category") };
     }
 
+    updateTag(CATALOG_TAG);
     revalidatePath("/", "layout");
     return { ok: true, data: { id: data.id as string } };
   } catch (error) {
@@ -89,6 +91,7 @@ export async function updateCategoryAction(
       return { ok: false, error: getErrorMessage(error, "Failed to update category") };
     }
 
+    updateTag(CATALOG_TAG);
     revalidatePath("/", "layout");
     return { ok: true, data: undefined };
   } catch (error) {
@@ -114,6 +117,7 @@ export async function deleteCategoryAction(id: string): Promise<ActionResult> {
       return { ok: false, error: getErrorMessage(error, "Failed to delete category") };
     }
 
+    updateTag(CATALOG_TAG);
     revalidatePath("/", "layout");
     return { ok: true, data: undefined };
   } catch (error) {

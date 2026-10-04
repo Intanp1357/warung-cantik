@@ -1,5 +1,4 @@
 import { getShopSettings } from "@/lib/queries/catalog";
-import { getPendingQueueCount } from "@/lib/queries/queue";
 import { requireSession } from "@/lib/auth";
 import { APP_NAME } from "@/lib/constants";
 import { Sidebar } from "@/components/layout/sidebar";
@@ -13,14 +12,11 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const session = await requireSession();
-  const [settings, pendingCount] = await Promise.all([
-    getShopSettings(),
-    getPendingQueueCount(),
-  ]);
+  const settings = await getShopSettings();
   const shopName = settings.data?.shop_name || APP_NAME;
 
   return (
-    <QueueCountProvider initialCount={pendingCount}>
+    <QueueCountProvider>
       <div className="flex min-h-screen">
         <Sidebar profile={session.profile} shopName={shopName} />
 

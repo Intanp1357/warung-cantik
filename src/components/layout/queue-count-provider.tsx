@@ -13,8 +13,11 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { QUEUE_CHANGED_EVENT } from "@/lib/utils/queue-events";
 
-/** Safety net in case Realtime is unavailable. */
-const POLL_INTERVAL_MS = 10_000;
+/**
+ * Safety net in case Realtime is unavailable — realtime already delivers
+ * instant updates, so this only has to catch a broken connection.
+ */
+const POLL_INTERVAL_MS = 20_000;
 
 interface QueueCountContextValue {
   /** Products still waiting to be served (drives the nav badge). */
@@ -32,13 +35,14 @@ const QueueCountContext = createContext<QueueCountContextValue>({
 });
 
 export function QueueCountProvider({
-  initialCount,
   children,
 }: {
-  initialCount: number;
   children: React.ReactNode;
 }) {
-  const [pendingCount, setPendingCount] = useState(initialCount);
+  // Starts at 0 on the server (the badge is hidden until then) and is filled
+  // in immediately after mount, then kept fresh by realtime/polling — so the
+  // layout never blocks a page render on this count.
+  const [pendingCount, setPendingCount] = useState(0);
   const [changeVersion, setChangeVersion] = useState(0);
   const busyRef = useRef(false);
 

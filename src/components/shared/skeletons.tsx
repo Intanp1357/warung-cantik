@@ -80,3 +80,13 @@ export function DashboardSkeleton() {
     </div>
   );
 }
+
+/** Streams in while the dashboard summary RPC is running. */
+export function DashboardStatsSkeleton() {
+  return <DashboardSkeleton />;
+}
+
+/** Streams in while the recent transactions query is running. */
+export function RecentTransactionsSkeleton() {
+  return <TransactionListSkeleton count={3} />;
+}

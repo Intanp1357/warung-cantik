@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
+import { CATALOG_TAG } from "@/lib/cache-tags";
 import { getSessionContext } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { queueStatusActionSchema } from "@/lib/validations/queue";
@@ -41,6 +42,8 @@ export async function setQueueStatusAction(
 
     if (error) return { ok: false, error: getErrorMessage(error) };
 
+    // Cancelling / restoring an item moves stock → refresh the catalog cache.
+    updateTag(CATALOG_TAG);
     revalidatePath("/", "layout");
     return { ok: true, data: parsed.data.status };
   } catch (error) {

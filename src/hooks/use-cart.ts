@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { newId } from "@/lib/utils/id";
 
 export interface CartItem {
   id: string;
@@ -15,6 +16,13 @@ export interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  /**
+   * Idempotency key for the current cart: it changes whenever the cart changes
+   * (and after a successful checkout), so retrying the same cart reuses the key
+   * and the server can recognise the replay instead of creating a second
+   * transaction.
+   */
+  checkoutReference: string;
   add: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   remove: (id: string) => void;
   increment: (id: string) => void;
@@ -28,12 +36,14 @@ export const useCart = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      checkoutReference: newId(),
 
       add: (item, quantity = 1) =>
         set((state) => {
           const existing = state.items.find((entry) => entry.id === item.id);
           if (existing) {
             return {
+              checkoutReference: newId(),
               items: state.items.map((entry) =>
                 entry.id === item.id
                   ? {
@@ -45,6 +55,7 @@ export const useCart = create<CartState>()(
             };
           }
           return {
+            checkoutReference: newId(),
             items: [
               ...state.items,
               { ...item, quantity: Math.min(MAX_QUANTITY, quantity) },
@@ -53,10 +64,14 @@ export const useCart = create<CartState>()(
         }),
 
       remove: (id) =>
-        set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
+        set((state) => ({
+          checkoutReference: newId(),
+          items: state.items.filter((i) => i.id !== id),
+        })),
 
       increment: (id) =>
         set((state) => ({
+          checkoutReference: newId(),
           items: state.items.map((item) =>
             item.id === id
               ? { ...item, quantity: Math.min(MAX_QUANTITY, item.quantity + 1) }
@@ -66,6 +81,7 @@ export const useCart = create<CartState>()(
 
       decrement: (id) =>
         set((state) => ({
+          checkoutReference: newId(),
           items: state.items.flatMap((item) => {
             if (item.id !== id) return [item];
             if (item.quantity <= 1) return [];
@@ -73,7 +89,7 @@ export const useCart = create<CartState>()(
           }),
         })),
 
-      clear: () => set({ items: [] }),
+      clear: () => set({ items: [], checkoutReference: newId() }),
     }),
     {
       name: "warung-pos-cart",

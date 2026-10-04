@@ -25,6 +25,11 @@ interface TransactionRow {
   items: { id: string }[] | null;
 }
 
+const TRANSACTION_COLUMNS =
+  "id, transaction_code, total_amount, payment_method, payment_amount, change_amount, status, created_at, created_by";
+const ITEM_COLUMNS =
+  "id, transaction_id, product_id, product_name, quantity, price, subtotal, created_at, queue_status, resolved_at, resolved_by";
+
 function escapeLike(value: string): string {
   return value.replace(/([%_\\])/g, "\\$1");
 }
@@ -38,7 +43,7 @@ export async function getTransactions(
       from,
       method = "all",
       page = 1,
-      pageSize = 12,
+      pageSize = 20,
     } = filters;
 
     const supabase = await createClient();
@@ -46,7 +51,7 @@ export async function getTransactions(
     let query = supabase
       .from("transactions")
       .select(
-        "*, created_by_profile:profiles!transactions_created_by_fkey(full_name), items:transaction_items(id)",
+        `${TRANSACTION_COLUMNS}, created_by_profile:profiles!transactions_created_by_fkey(full_name), items:transaction_items(id)`,
         { count: "exact" },
       );
 
@@ -67,7 +72,7 @@ export async function getTransactions(
 
     if (error) return fail(error);
 
-    const items: Transaction[] = ((data ?? []) as TransactionRow[]).map((row) => ({
+    const items: Transaction[] = ((data ?? []) as unknown as TransactionRow[]).map((row) => ({
       id: row.id,
       transaction_code: row.transaction_code,
       total_amount: row.total_amount,
@@ -95,7 +100,7 @@ export async function getTransactionById(
     const { data, error } = await supabase
       .from("transactions")
       .select(
-        "*, created_by_profile:profiles!transactions_created_by_fkey(full_name), items:transaction_items(*)",
+        `${TRANSACTION_COLUMNS}, created_by_profile:profiles!transactions_created_by_fkey(full_name), items:transaction_items(${ITEM_COLUMNS})`,
       )
       .eq("id", id)
       .maybeSingle();

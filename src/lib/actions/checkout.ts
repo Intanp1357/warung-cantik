@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath, updateTag } from "next/cache";
+import { CATALOG_TAG } from "@/lib/cache-tags";
 import { createClient } from "@/lib/supabase/server";
 import { checkoutSchema } from "@/lib/validations/checkout";
 import { GENERIC_ERROR, getErrorMessage } from "@/lib/utils/errors";
@@ -30,21 +32,36 @@ export async function createTransactionAction(
 
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
-    if (!user) {
-      return { ok: false, error: "Your session has expired. Please log in again." };
+    // Fast path: verify the JWT locally instead of a round-trip to the Auth
+    // server (the RPC re-checks `auth.uid()` anyway).
+    const { data: claimData, error: claimError } = await supabase.auth.getClaims();
+    const hasSession =
+      !claimError && typeof claimData?.claims?.sub === "string";
+
+    if (!hasSession) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        return { ok: false, error: "Your session has expired. Please log in again." };
+      }
     }
 
     const { data, error } = await supabase.rpc("create_transaction", {
       p_items: parsed.data.items,
       p_payment_method: parsed.data.payment_method,
       p_payment_amount: parsed.data.payment_amount,
+      // Idempotency key: a retry of the same cart returns the first result.
+      p_client_reference: parsed.data.client_reference ?? null,
     });
 
     if (error) return { ok: false, error: getErrorMessage(error) };
+
+    // Stock changed → the cached product catalog must be refreshed.
+    updateTag(CATALOG_TAG);
+    revalidatePath("/", "layout");
 
     const row = Array.isArray(data) ? data[0] : data;
     const code = row?.new_code ?? row?.transaction_code;
@@ -53,15 +70,11 @@ export async function createTransactionAction(
     }
 
     const transactionId = (row.new_id ?? row.id) as string;
-    const { data: items } = await supabase
-      .from("transaction_items")
-      .select("quantity")
-      .eq("transaction_id", transactionId);
-
-    const itemCount = (items ?? []).reduce(
-      (sum, item) => sum + (item.quantity ?? 0),
-      0,
-    );
+    const itemCount =
+      typeof row.new_item_count === "number"
+        ? row.new_item_count
+        : // Fallback: the RPC stores exactly the requested quantities.
+          parsed.data.items.reduce((sum, item) => sum + item.quantity, 0);
 
     return {
       ok: true,

@@ -23,12 +23,14 @@ It is a real, usable POS: products, cart, checkout, stock, transaction history, 
 - 🛒 Cart that persists across navigation (desktop panel, mobile bottom sheet)
 - 💳 Checkout with **Cash / QRIS / Transfer**, change calculation and validation
 - 🔒 Checkout runs server-side (`create_transaction` RPC): prices, availability, stock and totals are re-read from the database — the browser is never trusted
+- ♻️ **Idempotent checkout**: a retried payment (network hiccup) returns the transaction that was already recorded — never a duplicate sale or a double stock deduction
 - 🧾 Human-readable transaction codes (`TRX-20261004-001`) and printable receipts
 - 📋 **Product queue**: every checked-out product enters a queue (with a **live** nav badge — Supabase Realtime + polling fallback), and the cashier marks each one **Done** or **Cancel** — cancelling returns the stock automatically
 - 🕘 Transaction history with search, date and payment-method filters + pagination
 - 📦 Product management (CRUD, image upload to Supabase Storage, stock, availability)
 - 🏷️ Category management
-- 📊 Owner dashboard: sales, transactions, products sold, average ticket + sales chart
+- 📊 Owner dashboard: sales, transactions, products sold, average ticket + sales chart (aggregated in Postgres, streamed in with Suspense)
+- ⚡ Fast by design: cached catalog queries (tag-invalidated on every mutation), client-side search/filter, deferred chart bundle, no auth round-trips on navigation — see [PERFORMANCE_REQUIREMENTS.md](./PERFORMANCE_REQUIREMENTS.md)
 - 📱 Mobile-first responsive layout (bottom navigation, bottom-sheet cart, 2-column grid)
 - 🎨 Soft pink design system driven by CSS variables (easy to re-skin)
 - 🚫 Friendly loading, empty and error states — raw database errors are never shown
@@ -49,6 +51,8 @@ npm install
    - `supabase/migrations/0002_seed.sql` — categories, products, shop settings and demo accounts
    - `supabase/migrations/0003_queue.sql` — product queue columns and the `set_queue_status` RPC (Done / Cancel with stock sync)
    - `supabase/migrations/0004_realtime.sql` — publishes `transaction_items` changes so the queue badge updates in realtime
+   - `supabase/migrations/0005_dashboard.sql` — `dashboard_summary` RPC: revenue, counts and the chart series are aggregated inside Postgres
+   - `supabase/migrations/0006_checkout_idempotency.sql` — idempotent checkout: a retried payment returns the first transaction instead of creating a duplicate
 3. Open **Project Settings → API** and copy the Project URL and the publishable/anon key.
 
 ### 3. Environment variables

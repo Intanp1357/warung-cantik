@@ -31,4 +31,4 @@ export const CASH_PRESETS = [10_000, 20_000, 50_000, 100_000];
 
 export const PRODUCT_IMAGE_BUCKET = "product-images";
 
-export const DEFAULT_PAGE_SIZE = 12;
+export const DEFAULT_PAGE_SIZE = 20;

@@ -13,8 +13,19 @@ interface QueueRow extends TransactionItem {
   };
 }
 
+/** Only the columns the queue actually renders (no `SELECT *`). */
 const QUEUE_SELECT = `
-  *,
+  id,
+  transaction_id,
+  product_id,
+  product_name,
+  quantity,
+  price,
+  subtotal,
+  created_at,
+  queue_status,
+  resolved_at,
+  resolved_by,
   transaction:transactions!inner(
     id,
     transaction_code,
@@ -39,9 +50,9 @@ export async function getQueue(
   try {
     const supabase = await createClient();
 
-    const { data, error, count } = await supabase
+    const { data, error } = await supabase
       .from("transaction_items")
-      .select(QUEUE_SELECT, { count: "exact" })
+      .select(QUEUE_SELECT)
       .eq("queue_status", status)
       .order("created_at", { ascending: status === "pending" })
       .limit(limit);
@@ -87,24 +98,8 @@ export async function getQueue(
       group.items.push(item);
     }
 
-    return ok({ groups, count: count ?? rows.length });
+    return ok({ groups, count: rows.length });
   } catch (error) {
     return fail(error);
-  }
-}
-
-/** Number of items waiting to be served (used for the nav badge). */
-export async function getPendingQueueCount(): Promise<number> {
-  try {
-    const supabase = await createClient();
-    const { count, error } = await supabase
-      .from("transaction_items")
-      .select("id", { count: "exact", head: true })
-      .eq("queue_status", "pending");
-
-    if (error) return 0;
-    return count ?? 0;
-  } catch {
-    return 0;
   }
 }

@@ -56,6 +56,9 @@ export function getErrorMessage(
   }
   if (/Insufficient stock/i.test(message)) return message;
   if (/not available/i.test(message)) return message;
+  if (/Could not find the function|schema cache/i.test(message)) {
+    return "This feature is not installed yet. Please run the latest database migration.";
+  }
   if (/Product not found/i.test(message)) {
     return "One of the products is no longer available. Please refresh.";
   }

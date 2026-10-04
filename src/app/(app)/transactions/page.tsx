@@ -19,7 +19,7 @@ import { cn } from "cn";
 
 export const metadata: Metadata = { title: "Transactions" };
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 20;
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
