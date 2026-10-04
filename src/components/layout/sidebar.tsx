@@ -4,19 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "cn";
 import { navForRole } from "@/components/layout/nav-items";
+import { useQueueCount } from "@/components/layout/queue-count-provider";
 import { BrandMark, UserMenu } from "@/components/layout/user-menu";
 import type { Profile } from "@/types";
 
 interface SidebarProps {
   profile: Profile;
   shopName: string;
-  /** Number of products waiting in the queue (nav badge). */
-  pendingCount?: number;
 }
 
-export function Sidebar({ profile, shopName, pendingCount = 0 }: SidebarProps) {
+export function Sidebar({ profile, shopName }: SidebarProps) {
   const pathname = usePathname();
   const items = navForRole(profile.role);
+  const { pendingCount } = useQueueCount();
 
   return (
     <aside className="no-print sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r bg-card lg:flex">

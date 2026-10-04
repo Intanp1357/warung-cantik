@@ -24,7 +24,7 @@ It is a real, usable POS: products, cart, checkout, stock, transaction history, 
 - 💳 Checkout with **Cash / QRIS / Transfer**, change calculation and validation
 - 🔒 Checkout runs server-side (`create_transaction` RPC): prices, availability, stock and totals are re-read from the database — the browser is never trusted
 - 🧾 Human-readable transaction codes (`TRX-20261004-001`) and printable receipts
-- 📋 **Product queue**: every checked-out product enters a queue (with a live nav badge), and the cashier marks each one **Done** or **Cancel** — cancelling returns the stock automatically
+- 📋 **Product queue**: every checked-out product enters a queue (with a **live** nav badge — Supabase Realtime + polling fallback), and the cashier marks each one **Done** or **Cancel** — cancelling returns the stock automatically
 - 🕘 Transaction history with search, date and payment-method filters + pagination
 - 📦 Product management (CRUD, image upload to Supabase Storage, stock, availability)
 - 🏷️ Category management
@@ -48,6 +48,7 @@ npm install
    - `supabase/migrations/0001_schema.sql` — tables, relationships, RLS policies, storage bucket and the atomic `create_transaction` RPC
    - `supabase/migrations/0002_seed.sql` — categories, products, shop settings and demo accounts
    - `supabase/migrations/0003_queue.sql` — product queue columns and the `set_queue_status` RPC (Done / Cancel with stock sync)
+   - `supabase/migrations/0004_realtime.sql` — publishes `transaction_items` changes so the queue badge updates in realtime
 3. Open **Project Settings → API** and copy the Project URL and the publishable/anon key.
 
 ### 3. Environment variables
@@ -113,7 +114,7 @@ src/
 │       └── settings/
 ├── components/
 │   ├── ui/                      # shadcn/ui primitives
-│   ├── layout/                  # sidebar, mobile header, bottom nav, user menu
+│   ├── layout/                  # sidebar, mobile header, bottom nav, user menu, queue count provider
 │   ├── products/                # catalog, cards, forms, image upload, managers
 │   ├── pos/                     # pos view, cart panel, cart content, checkout
 │   ├── queue/                   # queue board with Done / Cancel actions

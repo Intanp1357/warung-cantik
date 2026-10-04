@@ -5,6 +5,7 @@ import { APP_NAME } from "@/lib/constants";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { QueueCountProvider } from "@/components/layout/queue-count-provider";
 
 export default async function AppLayout({
   children,
@@ -19,25 +20,19 @@ export default async function AppLayout({
   const shopName = settings.data?.shop_name || APP_NAME;
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar
-        profile={session.profile}
-        shopName={shopName}
-        pendingCount={pendingCount}
-      />
+    <QueueCountProvider initialCount={pendingCount}>
+      <div className="flex min-h-screen">
+        <Sidebar profile={session.profile} shopName={shopName} />
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <MobileHeader profile={session.profile} shopName={shopName} />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 pb-28 sm:px-6 lg:px-8 lg:py-6 lg:pb-10">
-          {children}
-        </main>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <MobileHeader profile={session.profile} shopName={shopName} />
+          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-4 pb-28 sm:px-6 lg:px-8 lg:py-6 lg:pb-10">
+            {children}
+          </main>
+        </div>
+
+        <BottomNav profile={session.profile} shopName={shopName} />
       </div>
-
-      <BottomNav
-        profile={session.profile}
-        shopName={shopName}
-        pendingCount={pendingCount}
-      />
-    </div>
+    </QueueCountProvider>
   );
 }

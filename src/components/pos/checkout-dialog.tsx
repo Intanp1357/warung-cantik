@@ -18,6 +18,7 @@ import {
 import { getCartTotal, useCart } from "@/hooks/use-cart";
 import { CASH_PRESETS, PAYMENT_METHODS } from "@/lib/constants";
 import { formatRupiah } from "@/lib/utils/format";
+import { notifyQueueChanged } from "@/lib/utils/queue-events";
 import type { PaymentMethod } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,6 +92,7 @@ export function CheckoutDialog({
 
       setResult(response.data);
       clear();
+      notifyQueueChanged();
     } finally {
       setPending(false);
     }

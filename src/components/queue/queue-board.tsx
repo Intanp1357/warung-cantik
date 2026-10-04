@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { cn } from "cn";
 import { setQueueStatusAction } from "@/lib/actions/queue";
+import { useQueueCount } from "@/components/layout/queue-count-provider";
+import { notifyQueueChanged } from "@/lib/utils/queue-events";
 import { formatDateTime, formatRupiah } from "@/lib/utils/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -73,12 +75,22 @@ const EMPTY_COPY: Record<
 
 export function QueueBoard({ status, groups }: QueueBoardProps) {
   const router = useRouter();
-  const [, startTransition] = useTransition();
+  const { changeVersion } = useQueueCount();
   const [busyItemId, setBusyItemId] = useState<string | null>(null);
   const [busyGroupId, setBusyGroupId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const skipFirstVersion = useRef(true);
 
-  // Keep the board fresh while a new order is rung up on another device.
+  // Instant refresh whenever the queue changes (own action or another device).
+  useEffect(() => {
+    if (skipFirstVersion.current) {
+      skipFirstVersion.current = false;
+      return;
+    }
+    router.refresh();
+  }, [changeVersion, router]);
+
+  // Fallback while the board is left open on a counter screen.
   useEffect(() => {
     const timer = setInterval(() => router.refresh(), 15_000);
     return () => clearInterval(timer);
@@ -101,7 +113,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
       toast.success(`${item.product_name} cancelled — stock returned`);
     else toast.success(`${item.product_name} is back in the queue`);
 
-    startTransition(() => router.refresh());
+    notifyQueueChanged();
   };
 
   const markGroupAsDone = async (group: QueueGroup) => {
@@ -123,7 +135,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
 
     setBusyGroupId(null);
     toast.success(`${group.transaction.transaction_code} marked as served`);
-    startTransition(() => router.refresh());
+    notifyQueueChanged();
   };
 
   const refresh = () => {

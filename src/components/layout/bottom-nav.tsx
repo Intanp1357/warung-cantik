@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getInitials } from "@/lib/utils/format";
 import { ROLE_LABELS } from "@/lib/constants";
 import { mobileNavForRole, navForRole } from "@/components/layout/nav-items";
+import { useQueueCount } from "@/components/layout/queue-count-provider";
 import {
   Sheet,
   SheetContent,
@@ -22,20 +23,15 @@ import type { Profile } from "@/types";
 interface BottomNavProps {
   profile: Profile;
   shopName: string;
-  /** Number of products waiting in the queue (nav badge). */
-  pendingCount?: number;
 }
 
-export function BottomNav({
-  profile,
-  shopName,
-  pendingCount = 0,
-}: BottomNavProps) {
+export function BottomNav({ profile, shopName }: BottomNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const primaryItems = mobileNavForRole(profile.role);
   const allItems = navForRole(profile.role);
+  const { pendingCount } = useQueueCount();
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
