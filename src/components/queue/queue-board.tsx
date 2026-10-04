@@ -226,6 +226,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                 <CardContent className="space-y-2">
                   {group.items.map((item) => {
                     const busy = busyItemId === item.id;
+                    const toppings = item.toppings ?? [];
 
                     return (
                       <div
@@ -241,6 +242,28 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                               {item.quantity} × {formatRupiah(item.price)} ={" "}
                               {formatRupiah(item.subtotal)}
                             </p>
+                            {toppings.length > 0 ? (
+                              <ul className="mt-1 space-y-0.5">
+                                {toppings.map((topping) => (
+                                  <li
+                                    key={topping.id}
+                                    className="flex items-center gap-1.5 text-xs text-primary/90"
+                                  >
+                                    <span className="rounded-full bg-accent px-1.5 py-px text-[10px] font-semibold text-accent-foreground">
+                                      ×{topping.quantity}
+                                    </span>
+                                    <span className="truncate">
+                                      {topping.product_name}
+                                    </span>
+                                    <span className="ml-auto shrink-0 text-muted-foreground">
+                                      {formatRupiah(
+                                        topping.price * topping.quantity,
+                                      )}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : null}
                           </div>
                           <StatusBadge status={item.queue_status} />
                         </div>

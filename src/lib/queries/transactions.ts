@@ -29,6 +29,7 @@ const TRANSACTION_COLUMNS =
   "id, transaction_code, total_amount, payment_method, payment_amount, change_amount, status, created_at, created_by";
 const ITEM_COLUMNS =
   "id, transaction_id, product_id, product_name, quantity, price, subtotal, created_at, queue_status, resolved_at, resolved_by";
+const TOPPING_COLUMNS = "id, product_id, product_name, quantity, price";
 
 function escapeLike(value: string): string {
   return value.replace(/([%_\\])/g, "\\$1");
@@ -100,7 +101,7 @@ export async function getTransactionById(
     const { data, error } = await supabase
       .from("transactions")
       .select(
-        `${TRANSACTION_COLUMNS}, created_by_profile:profiles!transactions_created_by_fkey(full_name), items:transaction_items(${ITEM_COLUMNS})`,
+        `${TRANSACTION_COLUMNS}, created_by_profile:profiles!transactions_created_by_fkey(full_name), items:transaction_items(${ITEM_COLUMNS}, toppings:transaction_item_toppings(${TOPPING_COLUMNS}))`,
       )
       .eq("id", id)
       .maybeSingle();

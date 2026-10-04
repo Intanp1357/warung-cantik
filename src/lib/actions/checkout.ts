@@ -74,7 +74,16 @@ export async function createTransactionAction(
       typeof row.new_item_count === "number"
         ? row.new_item_count
         : // Fallback: the RPC stores exactly the requested quantities.
-          parsed.data.items.reduce((sum, item) => sum + item.quantity, 0);
+          parsed.data.items.reduce(
+            (sum, item) =>
+              sum +
+              item.quantity +
+              (item.toppings ?? []).reduce(
+                (toppingSum, topping) => toppingSum + topping.quantity,
+                0,
+              ),
+            0,
+          );
 
     return {
       ok: true,

@@ -48,6 +48,7 @@ export async function createProductAction(
         stock: values.stock,
         image_url: values.image_url || null,
         is_available: values.is_available,
+        has_toppings: values.has_toppings,
       })
       .select("id")
       .single();
@@ -92,6 +93,7 @@ export async function updateProductAction(
         stock: values.stock,
         image_url: values.image_url || null,
         is_available: values.is_available,
+        has_toppings: values.has_toppings,
       })
       .eq("id", id);
 

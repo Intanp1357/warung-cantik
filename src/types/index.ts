@@ -24,6 +24,8 @@ export interface Category {
   id: string;
   name: string;
   description: string | null;
+  /** Products in this category are offered as toppings for other products. */
+  is_topping: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -39,12 +41,14 @@ export interface Product {
   stock: number | null;
   image_url: string | null;
   is_available: boolean;
+  /** When true the cashier can add toppings to this product at the POS. */
+  has_toppings: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface ProductWithCategory extends Product {
-  category: Pick<Category, "id" | "name"> | null;
+  category: Pick<Category, "id" | "name" | "is_topping"> | null;
 }
 
 export interface Transaction {
@@ -74,6 +78,17 @@ export interface TransactionItem {
   queue_status: QueueStatus;
   resolved_at: string | null;
   resolved_by: string | null;
+  /** Toppings booked on this line (only fetched where they are rendered). */
+  toppings?: TransactionItemTopping[];
+}
+
+/** A topping recorded on a transaction line (name/price are snapshots). */
+export interface TransactionItemTopping {
+  id: string;
+  product_id: string | null;
+  product_name: string;
+  quantity: number;
+  price: number;
 }
 
 export interface QueueTransaction {

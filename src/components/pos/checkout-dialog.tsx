@@ -83,6 +83,12 @@ export function CheckoutDialog({
         items: items.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
+          toppings: (item.toppings ?? [])
+            .filter((topping) => topping.quantity > 0)
+            .map((topping) => ({
+              product_id: topping.id,
+              quantity: topping.quantity,
+            })),
         })),
         payment_method: method,
         payment_amount: paymentAmount,

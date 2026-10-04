@@ -58,6 +58,17 @@ export function Receipt({ transaction, shop }: ReceiptProps) {
                 {formatNumber(item.subtotal)}
               </span>
             </div>
+            {(item.toppings ?? []).map((topping) => (
+              <div
+                key={topping.id}
+                className="flex justify-between text-muted-foreground"
+              >
+                <span>
+                  + {topping.quantity} x {topping.product_name}
+                </span>
+                <span>{formatNumber(topping.price * topping.quantity)}</span>
+              </div>
+            ))}
           </div>
         ))}
       </div>

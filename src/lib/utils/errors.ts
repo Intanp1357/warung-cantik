@@ -59,6 +59,12 @@ export function getErrorMessage(
   if (/Could not find the function|schema cache/i.test(message)) {
     return "This feature is not installed yet. Please run the latest database migration.";
   }
+  if (/Could not find the .* (column|relation)|column .* does not exist/i.test(message)) {
+    return "This feature is not installed yet. Please run the latest database migration.";
+  }
+  if (/Topping not found|Invalid topping/i.test(message)) {
+    return "One of the toppings is no longer available. Please refresh and try again.";
+  }
   if (/Product not found/i.test(message)) {
     return "One of the products is no longer available. Please refresh.";
   }

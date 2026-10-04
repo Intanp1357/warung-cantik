@@ -73,6 +73,7 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
       stock: product.stock,
       image_url: product.image_url ?? "",
       is_available: !product.is_available,
+      has_toppings: product.has_toppings,
     });
 
     if (!result.ok) {
@@ -148,6 +149,12 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
                   <Badge variant={product.is_available ? "outline" : "destructive"}>
                     {product.is_available ? "Available" : "Unavailable"}
                   </Badge>
+                  {product.has_toppings ? (
+                    <Badge variant="outline">Toppings on</Badge>
+                  ) : null}
+                  {product.category?.is_topping ? (
+                    <Badge>Topping</Badge>
+                  ) : null}
                 </div>
 
                 <div className="mt-auto flex items-center justify-between gap-2 pt-3">

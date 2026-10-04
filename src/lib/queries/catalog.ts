@@ -19,9 +19,9 @@ import type { Category, ProductWithCategory, ShopSettings } from "@/types";
  */
 type SessionCookie = { name: string; value: string };
 
-const CATALOG_COLUMNS = "id, name, description, created_at, updated_at";
+const CATALOG_COLUMNS = "id, name, description, is_topping, created_at, updated_at";
 const PRODUCT_COLUMNS =
-  "id, name, description, category_id, price, cost_price, stock, image_url, is_available, created_at, updated_at";
+  "id, name, description, category_id, price, cost_price, stock, image_url, is_available, has_toppings, created_at, updated_at";
 
 async function readSessionCookies(): Promise<SessionCookie[]> {
   const store = await cookies();
@@ -57,7 +57,7 @@ async function fetchProducts(
   const supabase = scopedClient(sessionCookies);
   const { data, error } = await supabase
     .from("products")
-    .select(`${PRODUCT_COLUMNS}, category:categories(id, name)`)
+    .select(`${PRODUCT_COLUMNS}, category:categories(id, name, is_topping)`)
     .order("name");
 
   if (error) throw error; // never cache a failed fetch

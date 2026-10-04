@@ -9,7 +9,13 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import Image from "next/image";
-import { getCartCount, getCartTotal, useCart } from "@/hooks/use-cart";
+import {
+  getCartCount,
+  getCartTotal,
+  getLineTotal,
+  lineKeyOf,
+  useCart,
+} from "@/hooks/use-cart";
 import { formatRupiah, formatRupiahCompact } from "@/lib/utils/format";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -58,10 +64,12 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
         {items.map((item) => {
           const canIncrease =
             item.stock === null || item.quantity < item.stock;
+          const key = lineKeyOf(item);
+          const toppings = item.toppings ?? [];
 
           return (
             <div
-              key={item.id}
+              key={key}
               className="flex items-center gap-3 rounded-xl border bg-card p-2.5"
             >
               <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-muted">
@@ -86,10 +94,31 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
                   {formatRupiahCompact(item.price)}
                 </p>
 
+                {toppings.length > 0 ? (
+                  <ul className="mt-1 space-y-0.5">
+                    {toppings.map((topping) => (
+                      <li
+                        key={topping.id}
+                        className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                      >
+                        <span className="rounded-full bg-accent px-1.5 py-px text-[10px] font-semibold text-accent-foreground">
+                          ×{topping.quantity}
+                        </span>
+                        <span className="truncate">{topping.name}</span>
+                        <span className="ml-auto shrink-0">
+                          {formatRupiahCompact(
+                            topping.price * topping.quantity,
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
                 <div className="mt-1.5 inline-flex h-7 items-center gap-1 rounded-lg bg-muted px-1">
                   <button
                     type="button"
-                    onClick={() => decrement(item.id)}
+                    onClick={() => decrement(key)}
                     aria-label={`Decrease ${item.name}`}
                     className="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground"
                   >
@@ -100,7 +129,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
                   </span>
                   <button
                     type="button"
-                    onClick={() => increment(item.id)}
+                    onClick={() => increment(key)}
                     disabled={!canIncrease}
                     aria-label={`Increase ${item.name}`}
                     className="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground disabled:opacity-40"
@@ -113,14 +142,14 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
               <div className="flex flex-col items-end gap-2">
                 <button
                   type="button"
-                  onClick={() => remove(item.id)}
+                  onClick={() => remove(key)}
                   aria-label={`Remove ${item.name} from cart`}
                   className="rounded-md p-1.5 text-muted-foreground hover:text-destructive"
                 >
                   <Trash2Icon className="size-4" />
                 </button>
                 <p className="text-sm font-semibold">
-                  {formatRupiahCompact(item.price * item.quantity)}
+                  {formatRupiahCompact(getLineTotal(item))}
                 </p>
               </div>
             </div>

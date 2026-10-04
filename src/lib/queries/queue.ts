@@ -26,6 +26,13 @@ const QUEUE_SELECT = `
   queue_status,
   resolved_at,
   resolved_by,
+  toppings:transaction_item_toppings(
+    id,
+    product_id,
+    product_name,
+    quantity,
+    price
+  ),
   transaction:transactions!inner(
     id,
     transaction_code,
@@ -92,6 +99,7 @@ export async function getQueue(
         queue_status: row.queue_status,
         resolved_at: row.resolved_at,
         resolved_by: row.resolved_by,
+        toppings: row.toppings ?? [],
         transaction,
       };
 

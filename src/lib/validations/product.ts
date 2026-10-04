@@ -20,6 +20,8 @@ export const productSchema = z.object({
     .nullable(),
   image_url: z.string().url("Image URL must be valid").or(z.literal("")).nullable(),
   is_available: z.boolean(),
+  /** Cashier can pick toppings for this product at the POS. */
+  has_toppings: z.boolean(),
 });
 
 export type ProductValues = z.infer<typeof productSchema>;
@@ -27,6 +29,8 @@ export type ProductValues = z.infer<typeof productSchema>;
 export const categorySchema = z.object({
   name: z.string().trim().min(1, "Category name is required").max(50),
   description: z.string().trim().max(200).optional().or(z.literal("")),
+  /** Products of this category are offered as toppings. */
+  is_topping: z.boolean(),
 });
 
 export type CategoryValues = z.infer<typeof categorySchema>;

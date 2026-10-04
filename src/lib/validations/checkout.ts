@@ -1,8 +1,15 @@
 import { z } from "zod";
 
+/** One topping on a cart line — only ids and quantities leave the client. */
+export const cartToppingSchema = z.object({
+  product_id: z.string().uuid(),
+  quantity: z.number().int().min(1).max(999),
+});
+
 export const cartItemSchema = z.object({
   product_id: z.string().uuid(),
   quantity: z.number().int().min(1).max(999),
+  toppings: z.array(cartToppingSchema).max(30).optional(),
 });
 
 export const checkoutSchema = z.object({

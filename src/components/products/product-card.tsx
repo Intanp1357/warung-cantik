@@ -10,16 +10,23 @@ import type { ProductWithCategory } from "@/types";
 
 interface ProductCardProps {
   product: ProductWithCategory;
+  /**
+   * Present when toppings are available: tapping the card opens the topping
+   * picker instead of adding the product straight to the cart.
+   */
+  onPick?: (product: ProductWithCategory) => void;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, onPick }: ProductCardProps) {
   const items = useCart((state) => state.items);
   const add = useCart((state) => state.add);
   const increment = useCart((state) => state.increment);
   const decrement = useCart((state) => state.decrement);
 
-  const inCart = items.find((item) => item.id === product.id);
-  const quantity = inCart?.quantity ?? 0;
+  // One product can sit in the cart several times (different toppings).
+  const quantity = items
+    .filter((item) => item.id === product.id)
+    .reduce((sum, item) => sum + item.quantity, 0);
 
   const unavailable = !product.is_available;
   const outOfStock = product.stock !== null && product.stock <= 0;
@@ -27,6 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
     product.stock !== null && quantity >= product.stock;
   const canAdd = !unavailable && !outOfStock && !maxReached;
   const soldOut = unavailable || outOfStock;
+  const withToppings = Boolean(onPick) && product.has_toppings;
 
   const handleAdd = () => {
     if (!canAdd) return;
@@ -36,7 +44,13 @@ export function ProductCard({ product }: ProductCardProps) {
       price: product.price,
       image_url: product.image_url,
       stock: product.stock,
+      toppings: [],
     });
+  };
+
+  const handlePick = () => {
+    if (!canAdd) return;
+    onPick?.(product);
   };
 
   return (
@@ -72,6 +86,12 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.stock === 0 ? "Out of stock" : `${product.stock} left`}
           </span>
         ) : null}
+
+        {withToppings && quantity > 0 && !soldOut ? (
+          <span className="absolute top-2 right-2 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">
+            {quantity}
+          </span>
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-3">
@@ -83,7 +103,21 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <div className="mt-auto pt-2">
-          {quantity > 0 ? (
+          {withToppings ? (
+            <Button
+              type="button"
+              size="sm"
+              className="h-9 w-full"
+              onClick={handlePick}
+              disabled={!canAdd}
+            >
+              {soldOut
+                ? "Sold out"
+                : quantity > 0
+                  ? "Add toppings"
+                  : "Choose toppings"}
+            </Button>
+          ) : quantity > 0 ? (
             <div className="flex h-9 items-center justify-between rounded-lg bg-accent px-1 text-accent-foreground">
               <button
                 type="button"

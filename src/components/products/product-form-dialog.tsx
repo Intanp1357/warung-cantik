@@ -5,6 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "cn";
 import { createProductAction, updateProductAction } from "@/lib/actions/products";
 import { productSchema, type ProductValues } from "@/lib/validations/product";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ const emptyValues: ProductValues = {
   stock: null,
   image_url: "",
   is_available: true,
+  has_toppings: false,
 };
 
 interface ProductFormDialogProps {
@@ -74,6 +76,7 @@ export function ProductFormDialog({
             stock: product.stock,
             image_url: product.image_url ?? "",
             is_available: product.is_available,
+            has_toppings: product.has_toppings,
           }
         : emptyValues,
     );
@@ -81,11 +84,22 @@ export function ProductFormDialog({
 
   const imageUrl = useWatch({ control, name: "image_url" });
   const available = useWatch({ control, name: "is_available" });
+  const hasToppings = useWatch({ control, name: "has_toppings" });
+  const categoryId = useWatch({ control, name: "category_id" });
+  // A topping is never ordered with toppings of its own.
+  const isToppingCategory =
+    categories.find((category) => category.id === categoryId)?.is_topping ?? false;
 
   const onSubmit = handleSubmit(async (values) => {
     const result = product
-      ? await updateProductAction(product.id, values)
-      : await createProductAction(values);
+      ? await updateProductAction(product.id, {
+          ...values,
+          has_toppings: isToppingCategory ? false : values.has_toppings,
+        })
+      : await createProductAction({
+          ...values,
+          has_toppings: isToppingCategory ? false : values.has_toppings,
+        });
 
     if (!result.ok) {
       toast.error(result.error);
@@ -217,6 +231,38 @@ export function ProductFormDialog({
               onCheckedChange={(checked) => setValue("is_available", checked)}
             />
           </div>
+
+          <div
+            className={cn(
+              "flex items-center justify-between rounded-xl border bg-card p-3",
+              isToppingCategory && "opacity-60",
+            )}
+          >
+            <Label htmlFor="product-toppings" className="text-sm">
+              Add toppings
+              <span className="block text-xs font-normal text-muted-foreground">
+                {isToppingCategory
+                  ? "A topping cannot have toppings itself."
+                  : hasToppings
+                    ? "Cashiers pick toppings when selling this"
+                    : "Sold as a plain item"}
+              </span>
+            </Label>
+            <Switch
+              id="product-toppings"
+              checked={hasToppings && !isToppingCategory}
+              disabled={isToppingCategory}
+              onCheckedChange={(checked) => setValue("has_toppings", checked)}
+            />
+          </div>
+
+          {!isToppingCategory ? (
+            <p className="text-xs text-muted-foreground">
+              Toppings offered here come from the products in your topping
+              category (for example <span className="font-medium">Topping</span>
+              ).
+            </p>
+          ) : null}
 
           <DialogFooter>
             <Button

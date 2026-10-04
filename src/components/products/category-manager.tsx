@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon, PencilIcon, TagsIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -14,6 +14,8 @@ import { categorySchema, type CategoryValues } from "@/lib/validations/product";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -42,10 +44,12 @@ function CategoryFormDialog({
     register,
     handleSubmit,
     reset,
+    control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CategoryValues>({
     resolver: zodResolver(categorySchema),
-    defaultValues: { name: "", description: "" },
+    defaultValues: { name: "", description: "", is_topping: false },
   });
 
   useEffect(() => {
@@ -53,8 +57,11 @@ function CategoryFormDialog({
     reset({
       name: category?.name ?? "",
       description: category?.description ?? "",
+      is_topping: category?.is_topping ?? false,
     });
   }, [open, category, reset]);
+
+  const isTopping = useWatch({ control, name: "is_topping" });
 
   const onSubmit = handleSubmit(async (values) => {
     const result = category
@@ -101,6 +108,22 @@ function CategoryFormDialog({
               {...register("description")}
             />
           </FormField>
+
+          <div className="flex items-center justify-between rounded-xl border bg-card p-3">
+            <Label htmlFor="category-topping" className="text-sm">
+              Topping category
+              <span className="block text-xs font-normal text-muted-foreground">
+                {isTopping
+                  ? "Its products can be added to other products"
+                  : "Normal menu category"}
+              </span>
+            </Label>
+            <Switch
+              id="category-topping"
+              checked={isTopping}
+              onCheckedChange={(checked) => setValue("is_topping", checked)}
+            />
+          </div>
 
           <DialogFooter>
             <Button
@@ -189,9 +212,12 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
                     {category.description || "No description"}
                   </p>
                 </div>
-                <Badge variant="secondary">
-                  {counts.get(category.id) ?? 0} products
-                </Badge>
+                <div className="flex flex-wrap items-center justify-end gap-1">
+                  {category.is_topping ? <Badge>Topping</Badge> : null}
+                  <Badge variant="secondary">
+                    {counts.get(category.id) ?? 0} products
+                  </Badge>
+                </div>
               </div>
 
               <div className="mt-auto flex justify-end gap-1">

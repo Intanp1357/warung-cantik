@@ -6,15 +6,26 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { ProductCard } from "@/components/products/product-card";
 import { SearchInput } from "@/components/products/search-input";
 import { CategoryTabs } from "@/components/products/category-tabs";
+import { ToppingDialog } from "@/components/pos/topping-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import type { Category, ProductWithCategory } from "@/types";
 
-export function ProductGrid({ products }: { products: ProductWithCategory[] }) {
+interface ProductGridProps {
+  products: ProductWithCategory[];
+  /** Present on the POS: topping-capable cards open the topping picker. */
+  onPick?: (product: ProductWithCategory) => void;
+}
+
+export function ProductGrid({ products, onPick }: ProductGridProps) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard
+          key={product.id}
+          product={product}
+          onPick={product.has_toppings ? onPick : undefined}
+        />
       ))}
     </div>
   );
@@ -29,7 +40,14 @@ interface ProductCatalogProps {
 export function ProductCatalog({ products, categories }: ProductCatalogProps) {
   const [query, setQuery] = useState("");
   const [categoryId, setCategoryId] = useState("all");
+  const [picking, setPicking] = useState<ProductWithCategory | null>(null);
   const debouncedQuery = useDebounce(query).trim().toLowerCase();
+
+  // Toppings are the products of the category flagged as the topping category.
+  const toppingProducts = useMemo(
+    () => products.filter((product) => product.category?.is_topping),
+    [products],
+  );
 
   const filtered = useMemo(() => {
     return products.filter((product) => {
@@ -61,7 +79,10 @@ export function ProductCatalog({ products, categories }: ProductCatalogProps) {
       />
 
       {filtered.length > 0 ? (
-        <ProductGrid products={filtered} />
+        <ProductGrid
+          products={filtered}
+          onPick={toppingProducts.length > 0 ? setPicking : undefined}
+        />
       ) : (
         <EmptyState
           icon={
@@ -87,6 +108,14 @@ export function ProductCatalog({ products, categories }: ProductCatalogProps) {
           className="bg-transparent"
         />
       )}
+
+      <ToppingDialog
+        product={picking}
+        toppings={toppingProducts}
+        onOpenChange={(open) => {
+          if (!open) setPicking(null);
+        }}
+      />
     </div>
   );
 }

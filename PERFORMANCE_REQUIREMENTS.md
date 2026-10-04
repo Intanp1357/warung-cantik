@@ -145,6 +145,8 @@ Recommended initial page size:
 
 Add pagination or infinite loading for older transactions.
 
+Embedded relations (a transaction and its items, a queue line and its toppings) must come back from the same request — never one query per line or per topping.
+
 ---
 
 ## Dashboard Performance

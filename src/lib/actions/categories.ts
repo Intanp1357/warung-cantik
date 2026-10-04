@@ -40,6 +40,7 @@ export async function createCategoryAction(
       .insert({
         name: parsed.data.name,
         description: parsed.data.description || null,
+        is_topping: parsed.data.is_topping,
       })
       .select("id")
       .single();
@@ -81,6 +82,7 @@ export async function updateCategoryAction(
       .update({
         name: parsed.data.name,
         description: parsed.data.description || null,
+        is_topping: parsed.data.is_topping,
       })
       .eq("id", id);
 
