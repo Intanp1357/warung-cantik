@@ -13,12 +13,12 @@ export const cartItemSchema = z.object({
 });
 
 export const checkoutSchema = z.object({
-  items: z.array(cartItemSchema).min(1, "Your cart is empty"),
+  items: z.array(cartItemSchema).min(1, "Keranjangmu kosong"),
   payment_method: z.enum(["cash", "qris", "transfer"]),
   payment_amount: z
-    .number({ error: "Payment amount is required" })
-    .min(0, "Payment amount must be 0 or more")
-    .max(100_000_000, "Payment amount is too large"),
+    .number({ error: "Jumlah bayar wajib diisi" })
+    .min(0, "Jumlah bayar minimal 0")
+    .max(100_000_000, "Jumlah bayar terlalu besar"),
   /**
    * Idempotency key: the same cart retried after a network failure must not
    * create a second transaction. Generated on the client, stored server-side.

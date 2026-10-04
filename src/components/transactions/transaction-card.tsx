@@ -37,13 +37,13 @@ export function TransactionCard({ transaction }: { transaction: Transaction }) {
           {formatRupiah(transaction.total_amount)}
         </p>
         <p className="text-xs text-muted-foreground">
-          {itemCount} {itemCount === 1 ? "item" : "items"}
+          {itemCount} item
         </p>
         <Link
           href={`/transactions/${transaction.id}`}
           className={buttonVariants({ variant: "outline", size: "xs" })}
         >
-          View detail
+          Lihat detail
           <ChevronRightIcon />
         </Link>
       </div>

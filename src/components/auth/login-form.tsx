@@ -78,7 +78,7 @@ export function LoginForm({ shopName }: LoginFormProps) {
   const handleResetPassword = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!resetEmail.trim()) {
-      toast.error("Enter your email address first.");
+      toast.error("Masukkan alamat email kamu dulu.");
       return;
     }
 
@@ -94,7 +94,7 @@ export function LoginForm({ shopName }: LoginFormProps) {
         return;
       }
 
-      toast.success("Password reset link sent. Check your inbox.");
+      toast.success("Tautan atur ulang kata sandi sudah dikirim. Cek kotak masukmu.");
       setResetOpen(false);
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -113,10 +113,10 @@ export function LoginForm({ shopName }: LoginFormProps) {
           {shopName ?? APP_NAME}
         </p>
         <h1 className="mt-4 text-2xl font-semibold tracking-tight">
-          Welcome back! 👋
+          Selamat datang kembali! 👋
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Log in to start cashiering.
+          Masuk untuk mulai jualan.
         </p>
       </div>
 
@@ -143,7 +143,7 @@ export function LoginForm({ shopName }: LoginFormProps) {
         </FormField>
 
         <FormField
-          label="Password"
+          label="Kata sandi"
           htmlFor="password"
           error={errors.password?.message}
         >
@@ -161,7 +161,7 @@ export function LoginForm({ shopName }: LoginFormProps) {
               type="button"
               onClick={() => setShowPassword((value) => !value)}
               className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground hover:text-foreground"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
             >
               {showPassword ? (
                 <EyeOffIcon className="size-4" />
@@ -180,10 +180,10 @@ export function LoginForm({ shopName }: LoginFormProps) {
           {isSubmitting ? (
             <>
               <Loader2Icon className="animate-spin" />
-              Logging in...
+              Masuk...
             </>
           ) : (
-            "Login"
+            "Masuk"
           )}
         </Button>
       </form>
@@ -194,7 +194,7 @@ export function LoginForm({ shopName }: LoginFormProps) {
           onClick={() => setResetOpen(true)}
           className="text-sm font-medium text-primary hover:underline"
         >
-          Forgot password?
+          Lupa kata sandi?
         </button>
       </div>
 
@@ -209,9 +209,10 @@ export function LoginForm({ shopName }: LoginFormProps) {
       <Dialog open={resetOpen} onOpenChange={setResetOpen}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Reset password</DialogTitle>
+            <DialogTitle>Atur ulang kata sandi</DialogTitle>
             <DialogDescription>
-              We&apos;ll email you a link to set a new password.
+              Kami akan mengirimkan tautan ke emailmu untuk membuat kata sandi
+              baru.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleResetPassword} className="space-y-4">
@@ -227,7 +228,7 @@ export function LoginForm({ shopName }: LoginFormProps) {
             </FormField>
             <DialogFooter>
               <Button type="submit" disabled={resetPending}>
-                {resetPending ? "Sending..." : "Send reset link"}
+                {resetPending ? "Mengirim..." : "Kirim tautan"}
               </Button>
             </DialogFooter>
           </form>

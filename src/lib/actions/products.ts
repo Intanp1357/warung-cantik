@@ -11,10 +11,10 @@ import type { ActionResult } from "@/types";
 async function requireOwnerContext(): Promise<ActionResult> {
   const context = await getSessionContext();
   if (!context) {
-    return { ok: false, error: "Your session has expired. Please log in again." };
+    return { ok: false, error: "Sesi kamu sudah berakhir. Silakan masuk kembali." };
   }
   if (context.profile.role !== "owner") {
-    return { ok: false, error: "Only the owner can manage products." };
+    return { ok: false, error: "Hanya pemilik yang bisa mengelola produk." };
   }
   return { ok: true, data: undefined };
 }
@@ -29,7 +29,7 @@ export async function createProductAction(
   if (!parsed.success) {
     return {
       ok: false,
-      error: parsed.error.issues[0]?.message ?? "Please check the product form.",
+      error: parsed.error.issues[0]?.message ?? "Periksa formulir produk.",
     };
   }
 
@@ -74,7 +74,7 @@ export async function updateProductAction(
   if (!parsed.success) {
     return {
       ok: false,
-      error: parsed.error.issues[0]?.message ?? "Please check the product form.",
+      error: parsed.error.issues[0]?.message ?? "Periksa formulir produk.",
     };
   }
 

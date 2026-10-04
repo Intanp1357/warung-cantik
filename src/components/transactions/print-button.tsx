@@ -7,7 +7,7 @@ export function PrintButton() {
   return (
     <Button variant="outline" size="sm" onClick={() => window.print()}>
       <PrinterIcon />
-      Print / Receipt
+      Cetak / Cetak struk
     </Button>
   );
 }

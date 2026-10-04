@@ -40,11 +40,11 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please choose an image file.");
+      toast.error("Pilih file gambar dulu.");
       return;
     }
     if (file.size > MAX_SIZE_BYTES) {
-      toast.error("Image must be smaller than 2 MB.");
+      toast.error("Gambar harus berukuran kurang dari 2 MB.");
       return;
     }
 
@@ -58,7 +58,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
         .from(PRODUCT_IMAGE_BUCKET)
         .upload(path, file, { upsert: false, contentType: file.type });
 
-      if (error) throw new Error(getErrorMessage(error, "Failed to upload image"));
+      if (error) throw new Error(getErrorMessage(error, "Gagal mengunggah gambar"));
 
       const { data } = supabase.storage
         .from(PRODUCT_IMAGE_BUCKET)
@@ -67,7 +67,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
       if (value) void removeProductImage(value);
       onChange(data.publicUrl);
     } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to upload image"));
+      toast.error(getErrorMessage(error, "Gagal mengunggah gambar"));
     } finally {
       setPending(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -81,7 +81,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
           {value ? (
             <Image
               src={value}
-              alt="Product preview"
+              alt="Pratinjau produk"
               fill
               sizes="80px"
               className="object-cover"
@@ -113,7 +113,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
             ) : (
               <UploadIcon />
             )}
-            {value ? "Replace" : "Upload"}
+            {value ? "Ganti" : "Unggah"}
           </Button>
 
           {value ? (
@@ -128,13 +128,13 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
               }}
             >
               <Trash2Icon />
-              Remove
+              Hapus
             </Button>
           ) : null}
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        PNG or JPG, up to 2 MB. Optional — cards look fine without one.
+        PNG atau JPG, maksimal 2 MB. Opsional — tampilan kartu tetap bagus tanpa gambar.
       </p>
     </div>
   );

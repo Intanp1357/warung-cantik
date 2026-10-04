@@ -24,7 +24,7 @@ export function Sidebar({ profile, shopName }: SidebarProps) {
         <BrandMark name={shopName} />
       </div>
 
-      <nav className="flex-1 space-y-1 px-3" aria-label="Main navigation">
+      <nav className="flex-1 space-y-1 px-3" aria-label="Navigasi utama">
         {items.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);

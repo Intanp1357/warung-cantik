@@ -36,7 +36,7 @@ export function UserMenu({ profile, align = "end" }: UserMenuProps) {
       router.push("/login");
       router.refresh();
     } catch {
-      toast.error("Failed to log out. Please try again.");
+      toast.error("Gagal keluar. Silakan coba lagi.");
     } finally {
       setPending(false);
     }
@@ -51,12 +51,12 @@ export function UserMenu({ profile, align = "end" }: UserMenuProps) {
         >
           <Avatar className="size-8">
             <AvatarFallback className="bg-accent text-xs font-semibold text-accent-foreground">
-              {getInitials(profile.full_name || "User")}
+              {getInitials(profile.full_name || "Pengguna")}
             </AvatarFallback>
           </Avatar>
           <span className="min-w-0 flex-1 text-left">
             <span className="block truncate text-sm font-medium">
-              {profile.full_name || "User"}
+              {profile.full_name || "Pengguna"}
             </span>
             <span className="block text-xs text-muted-foreground">
               {ROLE_LABELS[profile.role]}
@@ -66,12 +66,12 @@ export function UserMenu({ profile, align = "end" }: UserMenuProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align} className="w-56">
         <DropdownMenuLabel className="truncate">
-          {profile.full_name || "User"}
+          {profile.full_name || "Pengguna"}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled={pending} onClick={handleLogout}>
           <LogOutIcon />
-          Log out
+          Keluar
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

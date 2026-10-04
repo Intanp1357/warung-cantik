@@ -11,12 +11,12 @@ type RangeValue = DateRangeKey | "all";
 type MethodValue = "all" | "cash" | "qris" | "transfer";
 
 const RANGE_OPTIONS: { value: RangeValue; label: string }[] = [
-  { value: "all", label: "All" },
+  { value: "all", label: "Semua" },
   ...DATE_RANGES,
 ];
 
 const METHOD_OPTIONS: { value: MethodValue; label: string }[] = [
-  { value: "all", label: "All payments" },
+  { value: "all", label: "Semua pembayaran" },
   ...PAYMENT_METHODS,
 ];
 
@@ -60,13 +60,13 @@ export function TransactionFilters({
       <SearchInput
         value={query}
         onChange={setQuery}
-        placeholder="Search transaction code..."
+        placeholder="Cari kode transaksi..."
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div
           role="group"
-          aria-label="Date range"
+          aria-label="Rentang tanggal"
           className="-mx-1 flex gap-2 overflow-x-auto px-1"
           style={{ scrollbarWidth: "none" }}
         >
@@ -90,7 +90,7 @@ export function TransactionFilters({
 
         <div
           role="group"
-          aria-label="Payment method"
+          aria-label="Metode pembayaran"
           className="-mx-1 flex gap-2 overflow-x-auto px-1"
           style={{ scrollbarWidth: "none" }}
         >

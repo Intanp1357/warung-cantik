@@ -33,7 +33,7 @@ function StatusBadge({ status }: { status: QueueStatus }) {
     return (
       <Badge>
         <CheckIcon />
-        Served
+        Disajikan
       </Badge>
     );
   }
@@ -42,7 +42,7 @@ function StatusBadge({ status }: { status: QueueStatus }) {
     return (
       <Badge variant="destructive">
         <XIcon />
-        Cancelled
+        Dibatalkan
       </Badge>
     );
   }
@@ -50,7 +50,7 @@ function StatusBadge({ status }: { status: QueueStatus }) {
   return (
     <Badge variant="secondary">
       <ClockIcon />
-      Pending
+      Menunggu
     </Badge>
   );
 }
@@ -60,16 +60,16 @@ const EMPTY_COPY: Record<
   { title: string; description: string }
 > = {
   pending: {
-    title: "All caught up!",
-    description: "No products are waiting to be served right now.",
+    title: "Semua beres!",
+    description: "Tidak ada produk yang menunggu untuk disajikan.",
   },
   done: {
-    title: "Nothing served yet",
-    description: "Products you mark as done will show up here.",
+    title: "Belum ada yang disajikan",
+    description: "Produk yang kamu tandai sebagai selesai akan muncul di sini.",
   },
   cancelled: {
-    title: "Nothing cancelled",
-    description: "Cancelled items will show up here.",
+    title: "Tidak ada yang dibatalkan",
+    description: "Item yang dibatalkan akan muncul di sini.",
   },
 };
 
@@ -111,10 +111,10 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
       return;
     }
 
-    if (next === "done") toast.success(`${item.product_name} marked as served`);
+    if (next === "done") toast.success(`${item.product_name} ditandai sebagai disajikan`);
     else if (next === "cancelled")
-      toast.success(`${item.product_name} cancelled — stock returned`);
-    else toast.success(`${item.product_name} is back in the queue`);
+      toast.success(`${item.product_name} dibatalkan — stok dikembalikan`);
+    else toast.success(`${item.product_name} kembali ke antrean`);
 
     notifyQueueChanged();
   };
@@ -137,7 +137,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
     }
 
     setBusyGroupId(null);
-    toast.success(`${group.transaction.transaction_code} marked as served`);
+    toast.success(`${group.transaction.transaction_code} ditandai sebagai disajikan`);
     notifyQueueChanged();
   };
 
@@ -154,19 +154,18 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-muted-foreground">
-          {totalItems} product{totalItems === 1 ? "" : "s"}{" "}
-          {status === "pending" ? "waiting" : status === "done" ? "served" : "cancelled"}
-          {status === "pending" ? " to be served" : ""}
+          {totalItems} produk{" "}
+          {status === "pending" ? "menunggu" : status === "done" ? "disajikan" : "dibatalkan"}
         </p>
 
         <Button
           variant="outline"
           size="sm"
           onClick={refresh}
-          aria-label="Refresh queue"
+          aria-label="Segarkan antrean"
         >
           <RefreshCwIcon className={cn(refreshing && "animate-spin")} />
-          Refresh
+          Segarkan
         </Button>
       </div>
 
@@ -202,7 +201,6 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">
                       {group.items.length} item
-                      {group.items.length === 1 ? "" : "s"}
                     </Badge>
 
                     {status === "pending" && hasPending ? (
@@ -217,7 +215,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                         ) : (
                           <CheckIcon />
                         )}
-                        Done all
+                        Selesai semua
                       </Button>
                     ) : null}
                   </div>
@@ -281,7 +279,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                                 ) : (
                                   <CheckIcon />
                                 )}
-                                Done
+                                Selesai
                               </Button>
                               <Button
                                 variant="outline"
@@ -295,7 +293,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                                 ) : (
                                   <XIcon />
                                 )}
-                                Cancel
+                                Batal
                               </Button>
                             </>
                           ) : (
@@ -310,7 +308,7 @@ export function QueueBoard({ status, groups }: QueueBoardProps) {
                               ) : (
                                 <Undo2Icon />
                               )}
-                              Undo
+                              Urungkan
                             </Button>
                           )}
                         </div>

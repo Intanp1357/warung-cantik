@@ -60,7 +60,7 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
       toast.error(result.error);
       return;
     }
-    toast.success("Product deleted");
+    toast.success("Produk dihapus");
   };
 
   const toggleAvailability = async (product: ProductWithCategory) => {
@@ -82,8 +82,8 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
     }
     toast.success(
       product.is_available
-        ? `${product.name} marked as unavailable`
-        : `${product.name} is available again`,
+        ? `${product.name} ditandai tidak tersedia`
+        : `${product.name} tersedia kembali`,
     );
   };
 
@@ -91,11 +91,11 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="flex-1">
-          <SearchInput value={query} onChange={setQuery} placeholder="Search products..." />
+          <SearchInput value={query} onChange={setQuery} placeholder="Cari produk..." />
         </div>
         <Button onClick={openCreate} className="h-10 w-full sm:w-auto">
           <PackagePlusIcon />
-          Add product
+          Tambah produk
         </Button>
       </div>
 
@@ -129,7 +129,7 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
                       {product.name}
                     </h3>
                     <p className="truncate text-xs text-muted-foreground">
-                      {product.description || "No description"}
+                      {product.description || "Tanpa deskripsi"}
                     </p>
                   </div>
                   <p className="shrink-0 text-sm font-semibold text-primary">
@@ -139,18 +139,18 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
 
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <Badge variant="secondary">
-                    {product.category?.name ?? "Uncategorized"}
+                    {product.category?.name ?? "Tanpa kategori"}
                   </Badge>
                   <Badge variant="outline">
                     {product.stock === null
-                      ? "Unlimited stock"
-                      : `${product.stock} in stock`}
+                      ? "Stok tanpa batas"
+                      : `stok ${product.stock}`}
                   </Badge>
                   <Badge variant={product.is_available ? "outline" : "destructive"}>
-                    {product.is_available ? "Available" : "Unavailable"}
+                    {product.is_available ? "Tersedia" : "Tidak tersedia"}
                   </Badge>
                   {product.has_toppings ? (
-                    <Badge variant="outline">Toppings on</Badge>
+                    <Badge variant="outline">Topping aktif</Badge>
                   ) : null}
                   {product.category?.is_topping ? (
                     <Badge>Topping</Badge>
@@ -162,16 +162,16 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
                     <Switch
                       checked={product.is_available}
                       onCheckedChange={() => void toggleAvailability(product)}
-                      aria-label={`Toggle availability for ${product.name}`}
+                      aria-label={`Ubah ketersediaan ${product.name}`}
                     />
-                    Available
+                    Tersedia
                   </label>
 
                   <div className="flex gap-1">
                     <Button
                       variant="outline"
                       size="icon-sm"
-                      aria-label={`Edit ${product.name}`}
+                      aria-label={`Ubah ${product.name}`}
                       onClick={() => openEdit(product)}
                     >
                       <PencilIcon />
@@ -179,7 +179,7 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
                     <Button
                       variant="outline"
                       size="icon-sm"
-                      aria-label={`Delete ${product.name}`}
+                      aria-label={`Hapus ${product.name}`}
                       onClick={() => setDeleting(product)}
                     >
                       <Trash2Icon />
@@ -193,20 +193,20 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
       ) : (
         <EmptyState
           icon={<PackagePlusIcon className="size-5" />}
-          title={products.length === 0 ? "No products yet" : "No products found"}
+          title={products.length === 0 ? "Belum ada produk" : "Produk tidak ditemukan"}
           description={
             products.length === 0
-              ? "Add your first product to start selling."
-              : "Try a different search keyword."
+              ? "Tambahkan produk pertama untuk mulai berjualan."
+              : "Coba kata kunci pencarian lain."
           }
           action={
             products.length === 0 ? (
               <Button size="sm" onClick={openCreate}>
-                Add product
+                Tambah produk
               </Button>
             ) : (
               <Button variant="outline" size="sm" onClick={() => setQuery("")}>
-                Clear search
+                Hapus pencarian
               </Button>
             )
           }
@@ -225,13 +225,13 @@ export function ProductsManager({ products, categories }: ProductsManagerProps) 
         onOpenChange={(next) => {
           if (!next) setDeleting(null);
         }}
-        title="Delete this product?"
+        title="Hapus produk ini?"
         description={
           deleting
-            ? `${deleting.name} will be removed from the catalog. Past transactions keep their records.`
+            ? `${deleting.name} akan dihapus dari katalog. Transaksi sebelumnya tetap tersimpan.`
             : undefined
         }
-        confirmLabel="Delete"
+        confirmLabel="Hapus"
         destructive
         onConfirm={handleDelete}
       />

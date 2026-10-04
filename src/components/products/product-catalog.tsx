@@ -92,16 +92,16 @@ export function ProductCatalog({ products, categories }: ProductCatalogProps) {
               <StoreIcon className="size-5" />
             )
           }
-          title={products.length === 0 ? "No products yet" : "No products found"}
+          title={products.length === 0 ? "Belum ada produk" : "Produk tidak ditemukan"}
           description={
             products.length === 0
-              ? "Ask the owner to add products to the catalog."
-              : "Try a different keyword or category."
+              ? "Minta pemilik untuk menambahkan produk ke katalog."
+              : "Coba kata kunci atau kategori lain."
           }
           action={
             products.length > 0 ? (
               <Button variant="outline" size="sm" onClick={resetFilters}>
-                Clear filters
+                Hapus filter
               </Button>
             ) : undefined
           }

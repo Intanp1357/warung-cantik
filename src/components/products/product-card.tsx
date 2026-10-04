@@ -77,13 +77,13 @@ export function ProductCard({ product, onPick }: ProductCardProps) {
 
         {unavailable ? (
           <span className="absolute top-2 left-2 rounded-full bg-background/90 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-            Unavailable
+            Tidak tersedia
           </span>
         ) : null}
 
         {!unavailable && product.stock !== null && product.stock <= 5 ? (
           <span className="absolute top-2 left-2 rounded-full bg-background/90 px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
-            {product.stock === 0 ? "Out of stock" : `${product.stock} left`}
+            {product.stock === 0 ? "Habis" : `sisa ${product.stock}`}
           </span>
         ) : null}
 
@@ -112,17 +112,17 @@ export function ProductCard({ product, onPick }: ProductCardProps) {
               disabled={!canAdd}
             >
               {soldOut
-                ? "Sold out"
+                ? "Habis"
                 : quantity > 0
-                  ? "Add toppings"
-                  : "Choose toppings"}
+                  ? "Tambah topping"
+                  : "Pilih topping"}
             </Button>
           ) : quantity > 0 ? (
             <div className="flex h-9 items-center justify-between rounded-lg bg-accent px-1 text-accent-foreground">
               <button
                 type="button"
                 onClick={() => decrement(product.id)}
-                aria-label={`Remove one ${product.name}`}
+                aria-label={`Kurangi satu ${product.name}`}
                 className="grid size-7 place-items-center rounded-md transition-colors hover:bg-white/70"
               >
                 <MinusIcon className="size-4" />
@@ -134,7 +134,7 @@ export function ProductCard({ product, onPick }: ProductCardProps) {
                 type="button"
                 onClick={() => (quantity === 0 ? handleAdd() : canAdd && increment(product.id))}
                 disabled={!canAdd}
-                aria-label={`Add one ${product.name}`}
+                aria-label={`Tambah satu ${product.name}`}
                 className="grid size-7 place-items-center rounded-md transition-colors hover:bg-white/70 disabled:opacity-40"
               >
                 <PlusIcon className="size-4" />
@@ -148,7 +148,7 @@ export function ProductCard({ product, onPick }: ProductCardProps) {
               onClick={handleAdd}
               disabled={!canAdd}
             >
-              {soldOut ? "Sold out" : "Add"}
+              {soldOut ? "Habis" : "Tambah"}
             </Button>
           )}
         </div>

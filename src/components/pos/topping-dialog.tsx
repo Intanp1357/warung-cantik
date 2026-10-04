@@ -133,14 +133,14 @@ function ToppingPicker({
         <DialogTitle>{product.name}</DialogTitle>
         <DialogDescription>
           {choices.length > 0
-            ? "Optional — leave everything at 0 to order it plain."
-            : "No toppings are available right now."}
+            ? "Opsional — biarkan semua di 0 untuk memesan tanpa topping."
+            : "Topping tidak tersedia saat ini."}
         </DialogDescription>
       </DialogHeader>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between rounded-xl bg-muted px-3 py-2 text-sm">
-          <span className="text-muted-foreground">Base price</span>
+          <span className="text-muted-foreground">Harga dasar</span>
           <span className="font-semibold">{formatRupiah(product.price)}</span>
         </div>
 
@@ -177,8 +177,8 @@ function ToppingPicker({
                   <p className="text-xs text-muted-foreground">
                     {choice.disabled
                       ? choice.product.is_available
-                        ? "Sold out"
-                        : "Not available"
+                        ? "Habis"
+                        : "Tidak tersedia"
                       : `+${formatRupiah(choice.product.price)}`}
                   </p>
                 </div>
@@ -194,7 +194,7 @@ function ToppingPicker({
                       )
                     }
                     disabled={choice.disabled || choice.quantity === 0}
-                    aria-label={`Remove one ${choice.product.name}`}
+                    aria-label={`Kurangi satu ${choice.product.name}`}
                     className="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground disabled:opacity-40"
                   >
                     <MinusIcon className="size-3.5" />
@@ -212,7 +212,7 @@ function ToppingPicker({
                       )
                     }
                     disabled={choice.disabled || choice.quantity >= choice.max}
-                    aria-label={`Add one ${choice.product.name}`}
+                    aria-label={`Tambah satu ${choice.product.name}`}
                     className="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground disabled:opacity-40"
                   >
                     <PlusIcon className="size-3.5" />
@@ -225,7 +225,7 @@ function ToppingPicker({
 
         <div className="space-y-1 rounded-xl bg-muted p-3 text-sm">
           <div className="flex justify-between text-muted-foreground">
-            <span>Toppings</span>
+            <span>Topping</span>
             <span>{formatRupiah(toppingTotal)}</span>
           </div>
           <div className="flex justify-between">
@@ -243,10 +243,10 @@ function ToppingPicker({
           variant="outline"
           onClick={onClose}
         >
-          Cancel
+          Batal
         </Button>
         <Button type="button" onClick={handleAdd}>
-          Add to cart
+          Tambahkan ke keranjang
         </Button>
       </DialogFooter>
     </>

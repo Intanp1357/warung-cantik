@@ -73,7 +73,7 @@ function CategoryFormDialog({
       return;
     }
 
-    toast.success(category ? "Category updated" : "Category added");
+    toast.success(category ? "Kategori diperbarui" : "Kategori ditambahkan");
     onOpenChange(false);
   });
 
@@ -81,41 +81,41 @@ function CategoryFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>{category ? "Edit category" : "Add category"}</DialogTitle>
+          <DialogTitle>{category ? "Ubah kategori" : "Tambah kategori"}</DialogTitle>
           <DialogDescription>
-            Categories keep the POS easy to browse.
+            Kategori membuat POS lebih mudah dijelajahi.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
-          <FormField label="Category name" htmlFor="category-name" required error={errors.name?.message}>
+          <FormField label="Nama kategori" htmlFor="category-name" required error={errors.name?.message}>
             <Input
               id="category-name"
-              placeholder="Drink"
+              placeholder="Minuman"
               aria-invalid={Boolean(errors.name)}
               {...register("name")}
             />
           </FormField>
 
           <FormField
-            label="Description"
+            label="Deskripsi"
             htmlFor="category-description"
             error={errors.description?.message}
           >
             <Input
               id="category-description"
-              placeholder="Fresh drinks"
+              placeholder="Minuman segar"
               {...register("description")}
             />
           </FormField>
 
           <div className="flex items-center justify-between rounded-xl border bg-card p-3">
             <Label htmlFor="category-topping" className="text-sm">
-              Topping category
+              Kategori topping
               <span className="block text-xs font-normal text-muted-foreground">
                 {isTopping
-                  ? "Its products can be added to other products"
-                  : "Normal menu category"}
+                  ? "Produknya bisa ditambahkan ke produk lain"
+                  : "Kategori menu biasa"}
               </span>
             </Label>
             <Switch
@@ -132,16 +132,16 @@ function CategoryFormDialog({
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              Batal
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2Icon className="animate-spin" />
-                  Saving...
+                  Menyimpan...
                 </>
               ) : (
-                "Save category"
+                "Simpan kategori"
               )}
             </Button>
           </DialogFooter>
@@ -178,7 +178,7 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
       toast.error(result.error);
       return;
     }
-    toast.success("Category deleted");
+    toast.success("Kategori dihapus");
   };
 
   return (
@@ -192,7 +192,7 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
           }}
         >
           <TagsIcon />
-          Add category
+          Tambah kategori
         </Button>
       </div>
 
@@ -209,13 +209,13 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
                     {category.name}
                   </h3>
                   <p className="truncate text-xs text-muted-foreground">
-                    {category.description || "No description"}
+                    {category.description || "Tanpa deskripsi"}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-end gap-1">
                   {category.is_topping ? <Badge>Topping</Badge> : null}
                   <Badge variant="secondary">
-                    {counts.get(category.id) ?? 0} products
+                    {counts.get(category.id) ?? 0} produk
                   </Badge>
                 </div>
               </div>
@@ -224,7 +224,7 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label={`Edit ${category.name}`}
+                  aria-label={`Ubah ${category.name}`}
                   onClick={() => {
                     setEditing(category);
                     setDialogOpen(true);
@@ -235,7 +235,7 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label={`Delete ${category.name}`}
+                  aria-label={`Hapus ${category.name}`}
                   onClick={() => setDeleting(category)}
                 >
                   <Trash2Icon />
@@ -247,8 +247,8 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
       ) : (
         <EmptyState
           icon={<TagsIcon className="size-5" />}
-          title="No categories yet"
-          description="Add categories like Food, Drink or Snack."
+          title="Belum ada kategori"
+          description="Tambahkan kategori seperti Makanan, Minuman, atau Camilan."
           action={
             <Button
               size="sm"
@@ -257,7 +257,7 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
                 setDialogOpen(true);
               }}
             >
-              Add category
+              Tambah kategori
             </Button>
           }
         />
@@ -274,13 +274,13 @@ export function CategoryManager({ categories, products }: CategoryManagerProps) 
         onOpenChange={(next) => {
           if (!next) setDeleting(null);
         }}
-        title="Delete this category?"
+        title="Hapus kategori ini?"
         description={
           deleting
-            ? `${deleting.name} will be removed. Products keep working without a category.`
+            ? `${deleting.name} akan dihapus. Produk tetap berfungsi tanpa kategori.`
             : undefined
         }
-        confirmLabel="Delete"
+        confirmLabel="Hapus"
         destructive
         onConfirm={handleDelete}
       />

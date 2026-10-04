@@ -106,7 +106,7 @@ export function ProductFormDialog({
       return;
     }
 
-    toast.success(product ? "Product updated" : "Product added successfully");
+    toast.success(product ? "Produk diperbarui" : "Produk berhasil ditambahkan");
     onOpenChange(false);
   });
 
@@ -114,16 +114,16 @@ export function ProductFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{product ? "Edit product" : "Add product"}</DialogTitle>
+          <DialogTitle>{product ? "Ubah produk" : "Tambah produk"}</DialogTitle>
           <DialogDescription>
             {product
-              ? "Update the product details below."
-              : "New products appear in the POS right away."}
+              ? "Perbarui detail produk di bawah ini."
+              : "Produk baru langsung muncul di POS."}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
-          <FormField label="Product name" htmlFor="product-name" required error={errors.name?.message}>
+          <FormField label="Nama produk" htmlFor="product-name" required error={errors.name?.message}>
             <Input
               id="product-name"
               placeholder="Es Teh Manis"
@@ -133,20 +133,20 @@ export function ProductFormDialog({
           </FormField>
 
           <FormField
-            label="Description"
+            label="Deskripsi"
             htmlFor="product-description"
             error={errors.description?.message}
           >
             <Textarea
               id="product-description"
               rows={2}
-              placeholder="Sweet iced tea"
+              placeholder="Teh manis dingin"
               {...register("description")}
             />
           </FormField>
 
           <FormField
-            label="Category"
+            label="Kategori"
             htmlFor="product-category"
             error={errors.category_id?.message}
           >
@@ -155,7 +155,7 @@ export function ProductFormDialog({
               className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               {...register("category_id")}
             >
-              <option value="">No category</option>
+              <option value="">Tanpa kategori</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -165,7 +165,7 @@ export function ProductFormDialog({
           </FormField>
 
           <div className="grid grid-cols-2 gap-3">
-            <FormField label="Price (Rp)" htmlFor="product-price" required error={errors.price?.message}>
+            <FormField label="Harga (Rp)" htmlFor="product-price" required error={errors.price?.message}>
               <Input
                 id="product-price"
                 type="number"
@@ -177,7 +177,7 @@ export function ProductFormDialog({
               />
             </FormField>
 
-            <FormField label="Cost price (Rp)" htmlFor="product-cost" required error={errors.cost_price?.message}>
+            <FormField label="Harga modal (Rp)" htmlFor="product-cost" required error={errors.cost_price?.message}>
               <Input
                 id="product-cost"
                 type="number"
@@ -191,17 +191,17 @@ export function ProductFormDialog({
           </div>
 
           <FormField
-            label="Stock"
+            label="Stok"
             htmlFor="product-stock"
             error={errors.stock?.message}
-            hint="Leave empty to disable stock tracking."
+            hint="Kosongkan jika tidak ingin melacak stok."
           >
             <Input
               id="product-stock"
               type="number"
               min={0}
               inputMode="numeric"
-              placeholder="Unlimited"
+              placeholder="Tanpa batas"
               {...register("stock", {
                 setValueAs: (value) =>
                   value === "" || value === null || value === undefined
@@ -211,7 +211,7 @@ export function ProductFormDialog({
             />
           </FormField>
 
-          <FormField label="Product image" error={errors.image_url?.message}>
+          <FormField label="Gambar produk" error={errors.image_url?.message}>
             <ImageUpload
               value={imageUrl || null}
               onChange={(next) => setValue("image_url", next ?? "")}
@@ -220,9 +220,9 @@ export function ProductFormDialog({
 
           <div className="flex items-center justify-between rounded-xl border bg-card p-3">
             <Label htmlFor="product-available" className="text-sm">
-              Available for sale
+              Dijual
               <span className="block text-xs font-normal text-muted-foreground">
-                {available ? "Shown in the POS" : "Hidden as sold out"}
+                {available ? "Tampil di POS" : "Disembunyikan karena habis"}
               </span>
             </Label>
             <Switch
@@ -239,13 +239,13 @@ export function ProductFormDialog({
             )}
           >
             <Label htmlFor="product-toppings" className="text-sm">
-              Add toppings
+              Terima topping
               <span className="block text-xs font-normal text-muted-foreground">
                 {isToppingCategory
-                  ? "A topping cannot have toppings itself."
+                  ? "Topping tidak bisa menambah topping sendiri."
                   : hasToppings
-                    ? "Cashiers pick toppings when selling this"
-                    : "Sold as a plain item"}
+                    ? "Kasir memilih topping saat menjual ini"
+                    : "Dijual tanpa topping"}
               </span>
             </Label>
             <Switch
@@ -258,8 +258,8 @@ export function ProductFormDialog({
 
           {!isToppingCategory ? (
             <p className="text-xs text-muted-foreground">
-              Toppings offered here come from the products in your topping
-              category (for example <span className="font-medium">Topping</span>
+              Topping yang ditawarkan berasal dari produk pada kategori topping
+              kamu (misalnya <span className="font-medium">Topping</span>
               ).
             </p>
           ) : null}
@@ -271,16 +271,16 @@ export function ProductFormDialog({
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              Batal
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2Icon className="animate-spin" />
-                  Saving...
+                  Menyimpan...
                 </>
               ) : (
-                "Save product"
+                "Simpan produk"
               )}
             </Button>
           </DialogFooter>

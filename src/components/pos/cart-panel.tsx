@@ -15,10 +15,10 @@ export function CartPanel() {
       <CardHeader className="flex-row items-center justify-between border-b py-4">
         <CardTitle className="flex items-center gap-2 text-base">
           <ShoppingCartIcon className="size-4 text-primary" />
-          Your Cart
+          Keranjangmu
         </CardTitle>
         <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
-          {count} {count === 1 ? "item" : "items"}
+          {count} item
         </span>
       </CardHeader>
 

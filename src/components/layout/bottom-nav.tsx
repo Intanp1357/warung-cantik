@@ -54,7 +54,7 @@ export function BottomNav({ profile, shopName }: BottomNavProps) {
   return (
     <>
       <nav
-        aria-label="Mobile navigation"
+        aria-label="Navigasi seluler"
         className="no-print fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 lg:hidden"
       >
         <div className="mx-auto flex max-w-md items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)]">
@@ -84,7 +84,7 @@ export function BottomNav({ profile, shopName }: BottomNavProps) {
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger className="flex min-h-14 min-w-16 flex-col items-center justify-center gap-1 px-2 py-2 text-[11px] font-medium text-muted-foreground">
               <MoreHorizontalIcon className="size-5" />
-              More
+              Lainnya
             </SheetTrigger>
             <SheetContent side="bottom" className="rounded-t-2xl pb-[env(safe-area-inset-bottom)]">
               <SheetHeader>
@@ -94,12 +94,12 @@ export function BottomNav({ profile, shopName }: BottomNavProps) {
               <div className="flex items-center gap-3 rounded-xl bg-muted p-3">
                 <Avatar className="size-10">
                   <AvatarFallback className="bg-accent text-sm font-semibold text-accent-foreground">
-                    {getInitials(profile.full_name || "User")}
+                    {getInitials(profile.full_name || "Pengguna")}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
-                    {profile.full_name || "User"}
+                    {profile.full_name || "Pengguna"}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {ROLE_LABELS[profile.role]}
@@ -146,7 +146,7 @@ export function BottomNav({ profile, shopName }: BottomNavProps) {
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-destructive"
                 >
                   <LogOutIcon className="size-4" />
-                  Log out
+                  Keluar
                 </button>
               </div>
 

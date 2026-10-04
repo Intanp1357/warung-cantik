@@ -10,12 +10,12 @@ interface CategoryTabsProps {
 }
 
 export function CategoryTabs({ categories, value, onChange }: CategoryTabsProps) {
-  const options = [{ id: "all", name: "All" }, ...categories];
+  const options = [{ id: "all", name: "Semua" }, ...categories];
 
   return (
     <div
       role="tablist"
-      aria-label="Product categories"
+      aria-label="Kategori produk"
       className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1"
       style={{ scrollbarWidth: "none" }}
     >

@@ -44,12 +44,12 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
     return (
       <EmptyState
         icon={<ShoppingCartIcon className="size-5" />}
-        title="Your cart is empty"
-        description="Start adding delicious products to your order."
+        title="Keranjangmu kosong"
+        description="Mulai tambahkan produk lezat ke pesananmu."
         action={
           onBrowse ? (
             <Button variant="outline" size="sm" onClick={onBrowse}>
-              Browse products
+              Lihat produk
             </Button>
           ) : undefined
         }
@@ -119,7 +119,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
                   <button
                     type="button"
                     onClick={() => decrement(key)}
-                    aria-label={`Decrease ${item.name}`}
+                    aria-label={`Kurangi ${item.name}`}
                     className="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground"
                   >
                     <MinusIcon className="size-3.5" />
@@ -131,7 +131,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
                     type="button"
                     onClick={() => increment(key)}
                     disabled={!canIncrease}
-                    aria-label={`Increase ${item.name}`}
+                    aria-label={`Tambah ${item.name}`}
                     className="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground disabled:opacity-40"
                   >
                     <PlusIcon className="size-3.5" />
@@ -143,7 +143,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
                 <button
                   type="button"
                   onClick={() => remove(key)}
-                  aria-label={`Remove ${item.name} from cart`}
+                  aria-label={`Hapus ${item.name} dari keranjang`}
                   className="rounded-md p-1.5 text-muted-foreground hover:text-destructive"
                 >
                   <Trash2Icon className="size-4" />
@@ -160,7 +160,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
       <div className="space-y-3 border-t pt-3">
         <div className="space-y-1.5 text-sm">
           <div className="flex justify-between text-muted-foreground">
-            <span>Items</span>
+            <span>Item</span>
             <span>{count}</span>
           </div>
           <div className="flex justify-between text-sm">
@@ -176,7 +176,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
             type="button"
             variant="outline"
             size="icon"
-            aria-label="Clear cart"
+            aria-label="Kosongkan keranjang"
             onClick={clear}
             className="shrink-0"
           >
@@ -187,7 +187,7 @@ export function CartContent({ onFinished, onBrowse }: CartContentProps) {
             className="h-10 flex-1"
             onClick={() => setCheckoutOpen(true)}
           >
-            Checkout
+            Bayar
           </Button>
         </div>
       </div>

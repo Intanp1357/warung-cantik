@@ -54,18 +54,18 @@ export function SettingsForm({ settings }: SettingsFormProps) {
       return;
     }
 
-    toast.success("Settings saved");
+    toast.success("Pengaturan disimpan");
     reset(values);
   });
 
   return (
     <Card className="rounded-2xl">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Shop details</CardTitle>
+        <CardTitle className="text-base">Detail warung</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="space-y-4" noValidate>
-          <FormField label="Shop name" htmlFor="shop-name" required error={errors.shop_name?.message}>
+          <FormField label="Nama warung" htmlFor="shop-name" required error={errors.shop_name?.message}>
             <Input
               id="shop-name"
               placeholder="Warung Cantik"
@@ -74,7 +74,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             />
           </FormField>
 
-          <FormField label="Address" htmlFor="shop-address" error={errors.address?.message}>
+          <FormField label="Alamat" htmlFor="shop-address" error={errors.address?.message}>
             <Input
               id="shop-address"
               placeholder="Jl. Mawar No. 10"
@@ -82,19 +82,19 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             />
           </FormField>
 
-          <FormField label="Phone" htmlFor="shop-phone" error={errors.phone?.message}>
+          <FormField label="Nomor telepon" htmlFor="shop-phone" error={errors.phone?.message}>
             <Input id="shop-phone" placeholder="0812-0000-0000" {...register("phone")} />
           </FormField>
 
           <FormField
-            label="Receipt footer"
+            label="Kata penutup struk"
             htmlFor="shop-footer"
             error={errors.receipt_footer?.message}
-            hint="Printed at the bottom of every receipt."
+            hint="Dicetak di bagian bawah setiap struk."
           >
             <Input
               id="shop-footer"
-              placeholder="Thank you! ♡"
+              placeholder="Terima kasih! ♡"
               {...register("receipt_footer")}
             />
           </FormField>
@@ -103,10 +103,10 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             {isSubmitting ? (
               <>
                 <Loader2Icon className="animate-spin" />
-                Saving...
+                Menyimpan...
               </>
             ) : (
-              "Save settings"
+              "Simpan pengaturan"
             )}
           </Button>
         </form>

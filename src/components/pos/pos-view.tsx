@@ -51,12 +51,12 @@ export function POSView({ products, categories }: POSViewProps) {
         >
           <span className="flex items-center gap-2">
             <ShoppingCartIcon className="size-4" />
-            {count === 0 ? "Cart is empty" : `${count} item${count === 1 ? "" : "s"}`}
+            {count === 0 ? "Keranjang kosong" : `${count} item`}
           </span>
           <span className="flex items-center gap-2">
             {count > 0 ? formatRupiah(total) : null}
             <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">
-              View cart
+              Lihat keranjang
             </span>
           </span>
         </button>
@@ -68,7 +68,7 @@ export function POSView({ products, categories }: POSViewProps) {
           className="max-h-[88vh] gap-3 rounded-t-2xl"
         >
           <SheetHeader className="border-b pb-3">
-            <SheetTitle>Your Cart 🛒</SheetTitle>
+            <SheetTitle>Keranjangmu 🛒</SheetTitle>
           </SheetHeader>
           <CartContent
             onFinished={() => setCartOpen(false)}

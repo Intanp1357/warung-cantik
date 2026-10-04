@@ -85,13 +85,13 @@ export function Receipt({ transaction, shop }: ReceiptProps) {
           <span>{formatNumber(transaction.payment_amount)}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
-          <span>CHANGE</span>
+          <span>KEMBALIAN</span>
           <span>{formatNumber(transaction.change_amount)}</span>
         </div>
       </div>
 
       <p className="mt-5 text-center text-xs text-muted-foreground">
-        {shop?.receipt_footer ?? "Thank you! ♡"}
+        {shop?.receipt_footer ?? "Terima kasih! ♡"}
       </p>
     </div>
   );

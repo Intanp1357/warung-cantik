@@ -11,12 +11,12 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
   return (
     <EmptyState
       icon={<TriangleAlertIcon className="size-5" />}
-      title="Oops! Something went wrong."
-      description={message ?? "Please try again in a moment."}
+      title="Ups, terjadi kesalahan."
+      description={message ?? "Coba lagi beberapa saat lagi."}
       action={
         onRetry ? (
           <Button variant="outline" size="sm" onClick={onRetry}>
-            Try again
+            Coba lagi
           </Button>
         ) : undefined
       }

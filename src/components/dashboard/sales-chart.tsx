@@ -25,7 +25,7 @@ export function SalesChart({ data }: SalesChartProps) {
   if (!hasData) {
     return (
       <div className="flex h-64 items-center justify-center rounded-xl bg-muted text-sm text-muted-foreground">
-        No sales in this period yet.
+        Belum ada penjualan pada periode ini.
       </div>
     );
   }
@@ -67,7 +67,7 @@ export function SalesChart({ data }: SalesChartProps) {
               boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
               fontSize: 12,
             }}
-            formatter={(value) => [formatRupiah(Number(value)), "Sales"]}
+            formatter={(value) => [formatRupiah(Number(value)), "Penjualan"]}
           />
 
           <Area

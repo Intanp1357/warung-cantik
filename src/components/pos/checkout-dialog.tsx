@@ -106,7 +106,7 @@ export function CheckoutDialog({
     } catch {
       // Network hiccup: the retry below reuses the same client reference, so
       // the server will never record the sale twice.
-      toast.error("Connection problem. Check the network and try again.");
+      toast.error("Koneksi bermasalah. Periksa jaringan lalu coba lagi.");
     } finally {
       setPending(false);
     }
@@ -126,9 +126,9 @@ export function CheckoutDialog({
               <CircleCheckIcon className="size-7" />
             </span>
             <div className="space-y-1">
-              <p className="font-semibold">Transaction completed</p>
+              <p className="font-semibold">Transaksi berhasil</p>
               <p className="text-sm text-muted-foreground">
-                Save this code for the receipt.
+                Simpan kode ini untuk struk.
               </p>
               <p className="mt-2 inline-block rounded-lg bg-muted px-3 py-1.5 font-mono text-sm font-semibold tracking-tight">
                 {result.transaction_code}
@@ -137,14 +137,13 @@ export function CheckoutDialog({
 
             <div className="w-full space-y-1.5 rounded-xl bg-muted p-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Payment method</span>
+                <span className="text-muted-foreground">Metode pembayaran</span>
                 <span className="font-medium capitalize">{method}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Queue</span>
+                <span className="text-muted-foreground">Antrean</span>
                 <span className="font-medium">
-                  {result.item_count} product
-                  {result.item_count === 1 ? "" : "s"} waiting
+                  {result.item_count} produk menunggu
                 </span>
               </div>
             </div>
@@ -158,18 +157,18 @@ export function CheckoutDialog({
                     onFinished?.();
                   }}
                 >
-                  View detail
+                  Lihat detail
                 </Link>
               </Button>
-              <Button onClick={finish}>New order</Button>
+              <Button onClick={finish}>Pesanan baru</Button>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <DialogHeader>
-              <DialogTitle>Checkout</DialogTitle>
+              <DialogTitle>Pembayaran</DialogTitle>
               <DialogDescription>
-                Confirm the payment to save this transaction.
+                Konfirmasi pembayaran untuk menyimpan transaksi ini.
               </DialogDescription>
             </DialogHeader>
 
@@ -183,10 +182,10 @@ export function CheckoutDialog({
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm font-medium">Payment method</p>
+              <p className="text-sm font-medium">Metode pembayaran</p>
               <div
                 role="radiogroup"
-                aria-label="Payment method"
+                aria-label="Metode pembayaran"
                 className="grid grid-cols-3 gap-2"
               >
                 {PAYMENT_METHODS.map((option) => {
@@ -218,7 +217,7 @@ export function CheckoutDialog({
             {method === "cash" ? (
               <div className="space-y-2">
                 <label htmlFor="payment-amount" className="text-sm font-medium">
-                  Payment amount
+                  Jumlah bayar
                 </label>
                 <div className="relative">
                   <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-muted-foreground">
@@ -245,7 +244,7 @@ export function CheckoutDialog({
                     variant="outline"
                     onClick={() => setAmount(String(total))}
                   >
-                    Exact
+                    Uang pas
                   </Button>
                   {CASH_PRESETS.map((preset) => (
                     <Button
@@ -262,18 +261,18 @@ export function CheckoutDialog({
 
                 {insufficient ? (
                   <p role="alert" className="text-xs font-medium text-destructive">
-                    Payment amount is less than the total.
+                    Jumlah bayar kurang dari total.
                   </p>
                 ) : null}
               </div>
             ) : (
               <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
-                The payment amount is set automatically for {method} payments.
+                Jumlah bayar diatur otomatis untuk pembayaran {method}.
               </p>
             )}
 
             <div className="flex items-center justify-between rounded-xl border bg-card p-4">
-              <span className="text-sm text-muted-foreground">Change</span>
+              <span className="text-sm text-muted-foreground">Kembalian</span>
               <span className="text-lg font-semibold">
                 {formatRupiah(change)}
               </span>
@@ -287,10 +286,10 @@ export function CheckoutDialog({
               {pending ? (
                 <>
                   <Loader2Icon className="animate-spin" />
-                  Processing...
+                  Memproses...
                 </>
               ) : (
-                "Confirm payment"
+                "Konfirmasi pembayaran"
               )}
             </Button>
           </form>

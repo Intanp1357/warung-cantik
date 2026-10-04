@@ -18,13 +18,13 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, ownerOnly: true },
+  { href: "/dashboard", label: "Dasbor", icon: LayoutDashboard, ownerOnly: true },
   { href: "/pos", label: "POS", icon: Store },
-  { href: "/queue", label: "Queue", icon: ClipboardList },
-  { href: "/products", label: "Products", icon: Package, ownerOnly: true },
-  { href: "/categories", label: "Categories", icon: Tags, ownerOnly: true },
-  { href: "/transactions", label: "Transactions", icon: ReceiptText },
-  { href: "/settings", label: "Settings", icon: Settings, ownerOnly: true },
+  { href: "/queue", label: "Antrean", icon: ClipboardList },
+  { href: "/products", label: "Produk", icon: Package, ownerOnly: true },
+  { href: "/categories", label: "Kategori", icon: Tags, ownerOnly: true },
+  { href: "/transactions", label: "Transaksi", icon: ReceiptText },
+  { href: "/settings", label: "Pengaturan", icon: Settings, ownerOnly: true },
 ];
 
 export function navForRole(role: Role): NavItem[] {
